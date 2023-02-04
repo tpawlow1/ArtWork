@@ -6,9 +6,17 @@ app = Flask(__name__)
 mydb = mysql.connector.connect(
     host = "localhost",
     user = "root",
-    password = "password"
+    password = "password", 
+    database= "testdb"
 )
 
+
+mysqlcursor = mydb.cursor()
+
 @app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
+def test():
+    query = 'SELECT Message FROM testtable'
+    mysqlcursor.execute(query)
+    result = mysqlcursor.fetchall()
+    message = '<p>' + str(result[0]) + '</p>'
+    return message
