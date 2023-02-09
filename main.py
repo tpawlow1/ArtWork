@@ -13,12 +13,18 @@ mydb = mysql.connector.connect(
 
 mysqlcursor = mydb.cursor()
 
-@app.route("/")
+@app.get("/")
 def index():
     return render_template('index.html')
 
-
-@app.route("/signup")
-def Signup():
+@app.get("/signup")
+def get_Signup():
     return render_template('signup.html')
+
+@app.post("/signup")
+def Signup():
+    # TODO 
+
+
+    return render_template('/')
 
