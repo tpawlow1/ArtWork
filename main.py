@@ -24,7 +24,9 @@ def get_Signup():
 @app.post("/signup")
 def Signup():
     # TODO 
+    # pull information from form ids
+    # verify passwords match
+    # if all good, send to user table in database
 
-
-    return render_template('/')
+    return render_template('/') # send user back to homepage or sign in
 
