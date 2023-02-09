@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 import mysql.connector
 
 app = Flask(__name__)
@@ -14,9 +14,11 @@ mydb = mysql.connector.connect(
 mysqlcursor = mydb.cursor()
 
 @app.route("/")
-def test():
-    query = 'SELECT Message FROM testtable'
-    mysqlcursor.execute(query)
-    result = mysqlcursor.fetchall()
-    message = '<p>' + str(result[0]) + '</p>'
-    return message
+def index():
+    return render_template('index.html')
+
+
+@app.route("/signup")
+def Signup():
+    return render_template('signup.html')
+
