@@ -41,3 +41,7 @@ def Signup():
 
     return render_template('index.html') # send user back to homepage or sign in
 
+
+if __name__ == "__main__":
+    app.run()
+
