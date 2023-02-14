@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 import mysql.connector
 
+
 app = Flask(__name__)
 
 mydb = mysql.connector.connect(
@@ -21,6 +22,10 @@ def index():
 def get_Signup():
     return render_template('signup.html')
 
+@app.get("/createpost")
+def get_createPost():
+    return render_template('createPost.html')
+
 @app.post("/signup")
 def Signup():
     # pull information from form ids
@@ -34,12 +39,28 @@ def Signup():
     # if all good, send to user table in database
     addcom = 'INSERT INTO Users VALUES (%s, %s, %s)'
     addvals = (username, email, userpass1)
-
     mysqlcursor.execute(addcom, addvals)
 
     mydb.commit()
 
     return render_template('index.html') # send user back to homepage or sign in
+
+@app.post("/createPost")
+def createPost():
+    title = request.form.get('title')
+    description = request.form.get('description')
+    price = request.form.get('price')
+    imageurl = request.form.get('imageurl')
+    #imagefile = request.files['imagefile']
+
+    addcom = 'INSERT INTO Posts VALUES (%s, %s, %s, %s)'
+    addvals = (title, description, price, imageurl)
+    #addcom = 'INSERT INTO Posts VALUES (%s, %s, %s, %s, %s)'
+    #addvals = (title, description, price, imagefile.filename, imagefile.read())
+    mysqlcursor.execute(addcom, addvals)
+    mydb.commit()
+
+    return render_template('index.html')
 
 
 if __name__ == "__main__":
