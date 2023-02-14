@@ -45,8 +45,9 @@ def Signup():
 
     return render_template('index.html') # send user back to homepage or sign in
 
-@app.post("/createPost")
+@app.post('/createpost')
 def createPost():
+    
     title = request.form.get('title')
     description = request.form.get('description')
     price = request.form.get('price')
