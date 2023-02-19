@@ -1,8 +1,12 @@
 from flask import Flask, render_template, request
 import mysql.connector
+import os
 
 
 app = Flask(__name__)
+
+UPLOAD_FOLDER = '/path/to/the/uploads'
+ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 mydb = mysql.connector.connect(
     host = "localhost",
@@ -11,8 +15,8 @@ mydb = mysql.connector.connect(
     database= "ArtWork"
 )
 
-
 mysqlcursor = mydb.cursor()
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.get("/")
 def index():
