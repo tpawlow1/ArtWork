@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 import mysql.connector
 import os
 
@@ -52,16 +52,27 @@ def Signup():
 @app.post('/createpost')
 def createPost():
     
+    # pull from post
     title = request.form.get('title')
     description = request.form.get('description')
     price = request.form.get('price')
-    imageurl = request.form.get('imageurl')
-    #imagefile = request.files['imagefile']
 
+    #pull file from form, get path
+    file = request.files['file']
+    # If the user does not select a file, the browser submits an
+    # empty file without a filename.
+    if file.filename == '':
+        print('No selected file')
+        return redirect('index.html')
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    if file:
+        file.save(filepath)
+
+
+
+    # add to db
     addcom = 'INSERT INTO Posts VALUES (%s, %s, %s, %s)'
-    addvals = (title, description, price, imageurl)
-    #addcom = 'INSERT INTO Posts VALUES (%s, %s, %s, %s, %s)'
-    #addvals = (title, description, price, imagefile.filename, imagefile.read())
+    addvals = (title, description, price, filepath)
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
 

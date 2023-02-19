@@ -12,6 +12,6 @@ CREATE TABLE `Posts`(
     `title` varchar(50),
     `description` varchar(300),
     `price` varchar(10),
-    `imageurl` varchar(2048)
+    `filepath` varchar(2048)
     
 );
