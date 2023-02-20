@@ -1,6 +1,0 @@
-to download requirements: 
-.\venv\scripts\activate
-python -m pip install -r requirements.txt
-
-to run: 
-flask --app main run

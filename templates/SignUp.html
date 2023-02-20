@@ -1,0 +1,30 @@
+{% extends '_layout.html' %}
+
+{% block title %}Sign Up!{% endblock %}
+
+{% block body %}
+<div>
+    <h1> Welcome to ArtWork! </h1>
+    <div>
+        <form action="/signup" method="POST">
+            <div class="form-group"> <!-- pulled from bootstrap example, will need to refine -->
+                <label for="usermail">Email address</label>
+                <input type="email" class="form-control" name="usermail" placeholder="Enter email">
+              </div>
+              <div class="form-group">
+                <label for="name">Username</label>
+                <input type="username" class="form-control" name="name" placeholder="Username">
+              </div>
+              <div class="form-group">
+                <label for="pass1">Password</label>
+                <input type="password" class="form-control" name="pass1" placeholder="Password">
+              </div>
+              <div class="form-group">
+                <label for="pass2">Password</label>
+                <input type="password" class="form-control" name="pass2" placeholder="Password">
+              </div>
+              <button type="submit" class="btn btn-warning">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
