@@ -4,4 +4,22 @@
 
 {% block body %}
 <h1>This is the homepage</h1> <!-- sample content until we create home/landing page-->
+
+{% for post in data %}
+<tr>
+    <td>Title: {{post[0]}}</td>
+    <td>Description: {{post[1]}}</td>
+    <td>Price: ${{post[2]}}</td>
+    <td>Filename: {{post[3]}}</td>
+    <td>
+    <div>
+        <img src="../static/images/{{post[3]}}"  height="200">
+    </div>
+    
+</td>
+    
+    
+    
+</tr>
+{%endfor%}
 {% endblock %}
