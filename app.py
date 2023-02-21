@@ -22,6 +22,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.get("/")
 def index():
+    #sending all post entries to index to appear 
     mysqlcursor.execute("SELECT * FROM Posts")
     data = mysqlcursor.fetchall()
 
@@ -82,6 +83,7 @@ def createPost():
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
 
+    #sending all post entries to index to appear 
     mysqlcursor.execute("SELECT * FROM Posts")
     data = mysqlcursor.fetchall()
 
