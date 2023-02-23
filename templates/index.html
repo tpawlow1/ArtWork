@@ -8,13 +8,13 @@
 {% for post in data %}
 <tr>
         <div>
-        <td>Title: {{post[0]}}</td>
-        <td>Description: {{post[1]}}</td>
-        <td>Price: ${{post[2]}}</td>
-        <td>Filename: {{post[3]}}</td>
+        <td>Title: {{post[1]}}</td>
+        <td>Description: {{post[2]}}</td>
+        <td>Price: ${{post[3]}}</td>
+        <td>Filename: {{post[4]}}</td>
         <td>
         <div>
-            <img src="../static/images/{{post[3]}}"  height="200">
+            <img src="../static/images/{{post[4]}}"  height="200">
         </div>
         <form>
             <button type="submit" class="btn btn-warning" formaction="">Edit</button>
