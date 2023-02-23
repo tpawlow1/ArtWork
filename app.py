@@ -20,6 +20,7 @@ mydb = mysql.connector.connect(
 mysqlcursor = mydb.cursor()
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# get index
 @app.get("/")
 def index():
     #sending all post entries to index to appear 
@@ -28,10 +29,12 @@ def index():
 
     return render_template('index.html', data=data)
 
+# get user signup page
 @app.get("/signup")
 def get_Signup():
     return render_template('signup.html')
 
+# post user info and create user
 @app.post("/signup")
 def Signup():
     # pull information from form ids
@@ -49,10 +52,12 @@ def Signup():
     mydb.commit()
     return render_template('index.html') # send user back to homepage or sign in
 
+# get create post form
 @app.get("/createpost")
 def get_createPost():
     return render_template('createPost.html')
 
+# upload post information and create post
 @app.post('/createpost')
 def createPost():
     # generate unique id
@@ -85,6 +90,20 @@ def createPost():
     data = mysqlcursor.fetchall()
 
     return render_template('index.html', data=data)
+
+
+# get post update form
+@app.get("/edit/<id>")
+def getEditPost(id):
+
+    mysqlcursor.execute("SELECT * FROM Posts") # edit to get post with id
+    data = mysqlcursor.fetchall() 
+
+    # pass with data from specific post
+    return render_template('editPost.html', post = data)
+
+
+# update post after sending form
 
 
 
