@@ -20,6 +20,14 @@ mydb = mysql.connector.connect(
 mysqlcursor = mydb.cursor()
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+def getposts(): 
+    #sending all post entries to index to appear 
+    mysqlcursor.execute("SELECT * FROM Posts")
+    data = mysqlcursor.fetchall()
+
+    return render_template('index.html', data=data)
+
+
 # get index
 @app.get("/")
 def index():
@@ -85,26 +93,33 @@ def createPost():
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
 
-    #sending all post entries to index to appear 
-    mysqlcursor.execute("SELECT * FROM Posts")
-    data = mysqlcursor.fetchall()
-
-    return render_template('index.html', data=data)
+    return getposts()
 
 
 # get post update form
 @app.get("/edit/<id>")
 def getEditPost(id):
-
-    mysqlcursor.execute("SELECT * FROM Posts") # edit to get post with id
-    data = mysqlcursor.fetchall() 
+    mysqlcursor.execute("SELECT * FROM Posts WHERE id = '" + str(id) + "'")
+    data = mysqlcursor.fetchall()[0]
 
     # pass with data from specific post
     return render_template('editPost.html', post = data)
 
 
 # update post after sending form
+@app.post("/edit/<id>")
+def updatePost(id):
 
+    newtitle = request.form.get('title')
+    newdescription = request.form.get('description')
+    newprice = request.form.get('price')
+
+    addcom = "SELECT * FROM Posts WHERE id IS (%s)" # make appropriate for db
+    addvals = (id)
+
+    mysqlcursor.execute(addcom, addvals)
+
+    return getposts()
 
 
 if __name__ == "__main__":
