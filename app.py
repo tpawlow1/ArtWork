@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect
 import mysql.connector
 import os
+import uuid
 
 
 app = Flask(__name__)
@@ -54,6 +55,8 @@ def get_createPost():
 
 @app.post('/createpost')
 def createPost():
+    # generate unique id
+    postid = str(uuid.uuid4())
 
     # pull from post
     title = request.form.get('title')
@@ -72,8 +75,8 @@ def createPost():
         file.save(filepath)
 
     # add to db
-    addcom = 'INSERT INTO Posts VALUES (%s, %s, %s, %s)'
-    addvals = (title, description, price, file.filename)
+    addcom = 'INSERT INTO Posts VALUES (%s, %s, %s, %s, %s)'
+    addvals = (postid, title, description, price, file.filename)
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
 
