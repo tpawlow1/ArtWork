@@ -114,9 +114,13 @@ def updatePost(id):
     newdescription = request.form.get('description')
     newprice = request.form.get('price')
 
-    addcom = "SELECT * FROM Posts WHERE id IS (%s)" # make appropriate for db
-    addvals = (id)
-
+    addcom = ("UPDATE Posts \
+                SET title = (%s), \
+                description = (%s), \
+                price = (%s) WHERE id = (%s)")
+    
+    addvals = (newtitle, newdescription, newprice, id)
+    
     mysqlcursor.execute(addcom, addvals)
 
     return getposts()
