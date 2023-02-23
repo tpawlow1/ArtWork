@@ -1,4 +1,3 @@
-from flask import Flask, render_template, request
 from flask import Flask, render_template, request, redirect
 import mysql.connector
 import os
@@ -31,9 +30,7 @@ def index():
 @app.get("/signup")
 def get_Signup():
     return render_template('signup.html')
-@app.get("/createpost")
-def get_createPost():
-    return render_template('createPost.html')
+
 @app.post("/signup")
 def Signup():
     # pull information from form ids
@@ -51,6 +48,10 @@ def Signup():
     mydb.commit()
     return render_template('index.html') # send user back to homepage or sign in
 
+@app.get("/createpost")
+def get_createPost():
+    return render_template('createPost.html')
+
 @app.post('/createpost')
 def createPost():
 
@@ -58,8 +59,6 @@ def createPost():
     title = request.form.get('title')
     description = request.form.get('description')
     price = request.form.get('price')
-    imageurl = request.form.get('imageurl')
-    #imagefile = request.files['imagefile']
 
     #pull file from form, get path
     file = request.files['file']
@@ -72,13 +71,8 @@ def createPost():
     if file:
         file.save(filepath)
 
-
-
     # add to db
     addcom = 'INSERT INTO Posts VALUES (%s, %s, %s, %s)'
-    addvals = (title, description, price, imageurl)
-    #addcom = 'INSERT INTO Posts VALUES (%s, %s, %s, %s, %s)'
-    #addvals = (title, description, price, imagefile.filename, imagefile.read())
     addvals = (title, description, price, file.filename)
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
@@ -88,6 +82,8 @@ def createPost():
     data = mysqlcursor.fetchall()
 
     return render_template('index.html', data=data)
+
+
 
 if __name__ == "__main__":
     app.run()
