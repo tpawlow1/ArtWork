@@ -6,25 +6,38 @@
 <h1>This is the homepage</h1> <!-- sample content until we create home/landing page-->
 
 {% for post in data %}
+
 <tr>
-        <div>
-        <td>Title: {{post[1]}}</td>
-        <td>Description: {{post[2]}}</td>
-        <td>Price: ${{post[3]}}</td>
-        <td>Filename: {{post[4]}}</td>
-        <td>
-        <div>
-            <img src="../static/images/{{post[4]}}"  height="200">
+        <div class = "card" style="width: 30%;"> <!-- card div for the posts-->
+
+            <img src="../static/images/{{post[4]}}"  width="100%">
+            
+            <td>
+                <p align="left" style="font-size:24px">
+                    <b>
+                        {{post[1]}}
+                    </b>
+                </p>
+            </td>
+            {{post[2]}}
+            <br>
+            <b>${{post[3]}}</b>
+
+            <td>
+                <div class = "d-flex justify-content-end"> <!-- displays buttons on the same line-->
+                    <form>
+                        <button type="submit" class="btn btn-warning" formaction="/edit/{{post[0]}}">Edit</button>
+                    </form>
+                    
+                    <form action="{{ url_for('deletePost', id=post[0]) }}" method="POST">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+
+            </td>
         </div>
-        <form>
-            <button type="submit" class="btn btn-warning" formaction="/edit/{{post[0]}}">Edit</button>
-        </form>
-    </div>
-    
-</td>
-    
-    
-    
 </tr>
+
 {%endfor%}
 {% endblock %}
