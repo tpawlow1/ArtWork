@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect
 import mysql.connector
 import os
+import uuid
 
 
 app = Flask(__name__)
@@ -19,6 +20,15 @@ mydb = mysql.connector.connect(
 mysqlcursor = mydb.cursor()
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+def getposts(): 
+    #sending all post entries to index to appear 
+    mysqlcursor.execute("SELECT * FROM Posts")
+    data = mysqlcursor.fetchall()
+
+    return render_template('index.html', data=data)
+
+
+# get index
 @app.get("/")
 def index():
     #sending all post entries to index to appear 
@@ -27,10 +37,12 @@ def index():
 
     return render_template('index.html', data=data)
 
+# get user signup page
 @app.get("/signup")
 def get_Signup():
     return render_template('signup.html')
 
+# post user info and create user
 @app.post("/signup")
 def Signup():
     # pull information from form ids
@@ -48,12 +60,16 @@ def Signup():
     mydb.commit()
     return render_template('index.html') # send user back to homepage or sign in
 
+# get create post form
 @app.get("/createpost")
 def get_createPost():
     return render_template('createPost.html')
 
+# upload post information and create post
 @app.post('/createpost')
 def createPost():
+    # generate unique id
+    postid = str(uuid.uuid4())
 
     # pull from post
     title = request.form.get('title')
@@ -72,17 +88,42 @@ def createPost():
         file.save(filepath)
 
     # add to db
-    addcom = 'INSERT INTO Posts VALUES (%s, %s, %s, %s)'
-    addvals = (title, description, price, file.filename)
+    addcom = 'INSERT INTO Posts VALUES (%s, %s, %s, %s, %s)'
+    addvals = (postid, title, description, price, file.filename)
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
 
-    #sending all post entries to index to appear 
-    mysqlcursor.execute("SELECT * FROM Posts")
-    data = mysqlcursor.fetchall()
+    return getposts()
 
-    return render_template('index.html', data=data)
 
+# get post update form
+@app.get("/edit/<id>")
+def getEditPost(id):
+    mysqlcursor.execute("SELECT * FROM Posts WHERE id = '" + str(id) + "'")
+    data = mysqlcursor.fetchall()[0]
+
+    # pass with data from specific post
+    return render_template('editPost.html', post = data)
+
+
+# update post after sending form
+@app.post("/edit/<id>")
+def updatePost(id):
+
+    newtitle = request.form.get('title')
+    newdescription = request.form.get('description')
+    newprice = request.form.get('price')
+
+    addcom = ("UPDATE Posts \
+                SET title = (%s), \
+                description = (%s), \
+                price = (%s) WHERE id = (%s)")
+    
+    addvals = (newtitle, newdescription, newprice, id)
+    
+    mysqlcursor.execute(addcom, addvals)
+
+    return getposts()
 
 
 if __name__ == "__main__":
