@@ -125,6 +125,15 @@ def updatePost(id):
 
     return getposts()
 
+# delete post using POST request
+@app.route('/delete/<id>', methods=['POST'])
+def deletePost(id):
+    deletecom = ("DELETE FROM Posts WHERE id = (%s)")
+    deletevals = (id,)
+    mysqlcursor.execute(deletecom, deletevals)
+    mydb.commit()
+
+    return getposts()
 
 if __name__ == "__main__":
     app.run()
