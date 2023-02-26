@@ -52,5 +52,14 @@ def profilePage():
     return render_template("profilePage.html")
 
 
+@app.post("/editProfile")
+def editProfile():
+    username = request.form.get('username')
+    email = request.form.get('email')
+    password = request.form.get('password')
+    bio = request.form.get('bio')
+    return render_template("profilePage.html")
+
+
 if __name__ == "__main__":
     app.run()
