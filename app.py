@@ -43,19 +43,18 @@ def index():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == 'POST':
+
         username = request.form['username']
         password = request.form['password']
 
         try:
-            cursor = mydb.cursor()
-
             query = "SELECT * FROM users WHERE username=%s AND password=%s"
-            cursor.execute(query, (username, password))
-            user = cursor.fetchone()
+            mysqlcursor.execute(query, (username, password))
+            confirm = mysqlcursor.fetchone()
 
-            if user:
-                session['logged_in'] = True
-                return redirect('/dashboard')
+            if confirm != None:
+                session['user'] = username
+                return redirect('/profile')
             else:
                 return render_template('login.html', message='Invalid login credentials. Please try again.')
 
@@ -63,25 +62,13 @@ def login():
             print(f"Error: {err}")
             return render_template('login.html', message='Database error. Please try again later.')
 
-        finally:
-            cursor.close()
-            mydb.close()
-
     return render_template('login.html')
-
-
-@app.route('/dashboard', methods=['GET', 'POST'])
-def dashboard():
-    if 'logged_in' in session:
-        return render_template('dashboard.html', message='You have successfully logged in')
-    else:
-        return redirect('/login')
 
 
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
-    session.pop('logged_in', None)
-    return redirect('/login')
+    session.pop('user', None)
+    return render_template('index.html')
 
 # get user signup page
 
