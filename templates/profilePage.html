@@ -56,6 +56,10 @@
             cursor: pointer;
             color: #000000;
         }
+        img:hover{
+          background: #000000;
+          color: white;
+        }
     </style>
   </head>
   <body>
@@ -66,7 +70,9 @@
       </div>
     </header>
     <div style="margin-top: 100px">
-      
+      <button onclick=openPicForm() style="background-color: inherit; border: none;" class="picBtn">
+        <img src="../static/images/{{data[0][4]}}" width="300px" height="auto" style="clip-path: circle()">
+      </button>
       <h2 style="margin-left: 30px;">{{data[0][0]}}</h2>
       <h4 style="margin-left: 30px">{{data[0][3]}}</h4>
     </div>
@@ -87,14 +93,31 @@
         </form>
       </div>
     </div>
+    <div id="editProfilePicOverlay" class="overlay">
+      <div class="wrap">
+        <span class="closebtn" onclick="closePicForm()" title="Close Overlay">&#215</span>
+        <h2>Upload Profile Picture</h2>
+        <form action="/profilePic" method="POST">
+          <label for="imagefile">Upload an image here: </label>
+          <input type="file" id="imagefile" name="file">
+          <input type="submit" value="Save" />
+        </form>
+      </div>
+    </div>
     <button style="margin-left: 30px" class="openbtn" onclick="openForm()">Edit Profile</button>
   </body>
   <script>
     function openForm(){
-        document.getElementById("editProfileOverlay").style.display = "block";
+      document.getElementById("editProfileOverlay").style.display = "block";
     }
     function closeForm(){
-        document.getElementById("editProfileOverlay").style.display = "none";
+      document.getElementById("editProfileOverlay").style.display = "none";
+    }
+    function openPicForm(){
+      document.getElementById("editProfilePicOverlay").style.display = "block";
+    }
+    function closePicForm(){
+      document.getElementById("editProfilePicOverlay").style.display = "none";
     }
   </script>
 </html>

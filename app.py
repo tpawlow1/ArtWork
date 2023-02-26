@@ -61,8 +61,8 @@ def Signup():
         # placeholder bounce back if no match
         return render_template('index.html')
     # if all good, send to user table in database
-    addcom = 'INSERT INTO Users VALUES (%s, %s, %s, %s)'
-    addvals = (username, email, userpass1, '')
+    addcom = 'INSERT INTO Users VALUES (%s, %s, %s, %s, %s)'
+    addvals = (username, email, userpass1, '', 'default:profilepic.jpg')
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
     # sets user's username to user for the session
@@ -103,6 +103,28 @@ def editProfile():
     session.pop('user', None)
     session['user'] = username
     return redirect("/profile")
+
+
+# edits profile pic in database
+@app.post("/profilePic")
+def editProfilePic():
+    user = session['user']
+
+    # pull file from form, get path
+    file = request.files['file']
+    # If the user does not select a file, the browser submits an
+    # empty file without a filename.
+    if file.filename == '':
+        print('No selected file')
+        return redirect('/profile')
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    if file:
+        file.save(filepath)
+    command = f"UPDATE Users SET profilePicPath='{file.filename}' WHERE username='{user}'"
+    mysqlcursor.execute(command)
+    mydb.commit()
+    return redirect("/profile")
+
 
 # get create post form
 
