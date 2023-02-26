@@ -106,7 +106,7 @@ def editProfile():
 
 
 # edits profile pic in database
-@app.post("/profilePic")
+@app.post("/profile/pic")
 def editProfilePic():
     user = session['user']
 
