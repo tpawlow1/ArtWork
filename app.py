@@ -72,8 +72,6 @@ def Signup():
     return redirect(url_for("homepage"))
 
 # homepage specific to the user that's logged in
-
-
 @app.get("/homepage")
 def homepage():
     user = session['user']
@@ -127,8 +125,6 @@ def editProfilePic():
 
 
 # get create post form
-
-
 @app.get("/createpost")
 def get_createPost():
     return render_template('createPost.html')
