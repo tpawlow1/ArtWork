@@ -49,9 +49,9 @@
 
         }
         .closebtn{
-            position: fixed;
-            top: 100px;
-            right: 780px;
+            position: relative;
+            bottom: 10px;
+            left: 330px;
             font-size: 40px;
             cursor: pointer;
             color: #000000;
@@ -71,8 +71,8 @@
       <p>Bio</p>
     </div>
     <div id="editProfileOverlay" class="overlay">
-      <span class="closebtn" onclick="closeForm()" title="Close Overlay">&#215</span>
       <div class="wrap">
+        <span class="closebtn" onclick="closeForm()" title="Close Overlay">&#215</span>
         <h2>Edit Profile</h2>
         <form>
             <label for="username">Username</label>
