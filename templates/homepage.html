@@ -23,7 +23,50 @@
         </div>
       </div>
     </header>
-    {% block body %}{% endblock %}
+    <h1>{{user}}'s Homepage</h1>
+    {%if post|length == 0%}
+    <h2>No Posts!</h2>
+    {%else%} {%for i in range(post|length)%}
+    <tr>
+      <div class="card" style="width: 30%">
+        <!-- card div for the posts-->
+
+        <img src="../static/images/{{post[i][4]}}" width="100%" />
+
+        <td>
+          <p align="left" style="font-size: 24px">
+            <b> {{post[i][1]}} </b>
+          </p>
+        </td>
+        {{post[i][2]}}
+        <br />
+        <b>${{post[i][3]}}</b>
+
+        <td>
+          <div class="d-flex justify-content-end">
+            <!-- displays buttons on the same line-->
+            <form>
+              <button
+                type="submit"
+                class="btn btn-warning"
+                formaction="/edit/{{post[i][0]}}"
+              >
+                Edit
+              </button>
+            </form>
+
+            <form
+              action="{{ url_for('deletePost', id=post[i][0]) }}"
+              method="POST"
+            >
+              <input type="hidden" name="_method" value="DELETE" />
+              <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+          </div>
+        </td>
+      </div>
+    </tr>
+    {%endfor%} {%endif%} {% block body %}{% endblock %}
     <footer></footer>
   </body>
 </html>

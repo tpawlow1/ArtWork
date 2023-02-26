@@ -23,11 +23,12 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 def getposts():
+    user = session['user']
     # sending all post entries to index to appear
-    mysqlcursor.execute("SELECT * FROM Posts")
+    mysqlcursor.execute(f"SELECT * FROM Posts WHERE user='{user}'")
     data = mysqlcursor.fetchall()
 
-    return render_template('index.html', data=data)
+    return data
 
 
 # get index
@@ -103,10 +104,14 @@ def Signup():
     return redirect(url_for("homepage"))
 
 # homepage specific to the user that's logged in
+
+
 @app.get("/homepage")
 def homepage():
     user = session['user']
-    return render_template("homepage.html", user=user)
+    data = getposts()
+    print(len(data))
+    return render_template("homepage.html", post=data, user=user)
 
 
 @app.get("/profile")
@@ -128,6 +133,9 @@ def editProfile():
 
     command = f"UPDATE Users SET username='{username}', email='{email}', password='{password}', bio='{bio}' WHERE username = '{user}';"
     mysqlcursor.execute(command)
+    mydb.commit()
+    command2 = f"UPDATE Posts SET user='{username}' WHERE user='{user}'"
+    mysqlcursor.execute(command2)
     mydb.commit()
     session.pop('user', None)
     session['user'] = username
@@ -165,6 +173,7 @@ def get_createPost():
 
 @app.post('/createpost')
 def createPost():
+    user = session['user']
     # generate unique id
     postid = str(uuid.uuid4())
 
@@ -185,12 +194,12 @@ def createPost():
         file.save(filepath)
 
     # add to db
-    addcom = 'INSERT INTO Posts VALUES (%s, %s, %s, %s, %s)'
-    addvals = (postid, title, description, price, file.filename)
+    addcom = 'INSERT INTO Posts VALUES (%s, %s, %s, %s, %s, %s)'
+    addvals = (postid, title, description, price, file.filename, user)
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
 
-    return getposts()
+    return redirect('/homepage')
 
 
 # get post update form
@@ -220,7 +229,7 @@ def updatePost(id):
 
     mysqlcursor.execute(addcom, addvals)
 
-    return getposts()
+    return redirect('/homepage')
 
 # delete post using POST request
 
@@ -232,7 +241,7 @@ def deletePost(id):
     mysqlcursor.execute(deletecom, deletevals)
     mydb.commit()
 
-    return getposts()
+    return redirect('/homepage')
 
 
 if __name__ == "__main__":
