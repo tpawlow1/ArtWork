@@ -7,7 +7,7 @@ import uuid
 app = Flask(__name__)
 app.secret_key = 'key'
 
-UPLOAD_FOLDER = os.getcwd() + '\\static\images\\'
+UPLOAD_FOLDER = os.getcwd() + '/static/images'
 ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 mydb = mysql.connector.connect(
