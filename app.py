@@ -60,8 +60,8 @@ def Signup():
         # placeholder bounce back if no match
         return render_template('index.html')
     # if all good, send to user table in database
-    addcom = 'INSERT INTO Users VALUES (%s, %s, %s)'
-    addvals = (username, email, userpass1)
+    addcom = 'INSERT INTO Users VALUES (%s, %s, %s, %s)'
+    addvals = (username, email, userpass1, '')
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
 

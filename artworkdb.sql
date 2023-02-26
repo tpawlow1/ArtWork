@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS `Users` (
     `username` varchar(40),
     `email` varchar(40), 
     `password` varchar(40),
-    'bio' varchar(255)
+    `bio` varchar(255)
 );
 
 CREATE TABLE IF NOT EXISTS`Posts`(
