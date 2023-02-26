@@ -10,13 +10,13 @@ app.secret_key = 'key'
 UPLOAD_FOLDER = os.getcwd() + '/static/images'
 ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
+
 mydb = mysql.connector.connect(
     host="localhost",
     user="root",
     password="password",
     database="ArtWork"
 )
-
 
 mysqlcursor = mydb.cursor()
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -38,6 +38,37 @@ def index():
     data = mysqlcursor.fetchall()
 
     return render_template('index.html', data=data)
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == 'POST':
+
+        username = request.form['username']
+        password = request.form['password']
+
+        try:
+            query = "SELECT * FROM users WHERE username=%s AND password=%s"
+            mysqlcursor.execute(query, (username, password))
+            confirm = mysqlcursor.fetchone()
+
+            if confirm != None:
+                session['user'] = username
+                return redirect('/profile')
+            else:
+                return render_template('login.html', message='Invalid login credentials. Please try again.')
+
+        except mysql.connector.Error as err:
+            print(f"Error: {err}")
+            return render_template('login.html', message='Database error. Please try again later.')
+
+    return render_template('login.html')
+
+
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    session.pop('user', None)
+    return render_template('index.html')
 
 # get user signup page
 
