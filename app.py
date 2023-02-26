@@ -1,10 +1,11 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session, url_for
 import mysql.connector
 import os
 import uuid
 
 
 app = Flask(__name__)
+app.secret_key = 'key'
 
 UPLOAD_FOLDER = os.getcwd() + '\\static\images\\'
 ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg', 'gif'}
@@ -64,23 +65,44 @@ def Signup():
     addvals = (username, email, userpass1, '')
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
+    # sets user's username to user for the session
+    session['user'] = username
 
-    # send user back to homepage or sign in
-    return render_template('index.html')
+    # send user to homepage
+    return redirect(url_for("homepage"))
+
+# homepage specific to the user that's logged in
+
+
+@app.get("/homepage")
+def homepage():
+    user = session['user']
+    return render_template("homepage.html", user=user)
 
 
 @app.get("/profile")
 def profilePage():
-    return render_template("profilePage.html")
+    user = session['user']
+    mysqlcursor.execute(f"SELECT * FROM Users WHERE username = '{user}'")
+    data = mysqlcursor.fetchall()
+    return render_template("profilePage.html", data=data)
 
 
-@app.post("/editProfile")
+@app.post("/profile")
 def editProfile():
+    user = session['user']
     username = request.form.get('username')
+    print(username)
     email = request.form.get('email')
     password = request.form.get('password')
     bio = request.form.get('bio')
-    return render_template("profilePage.html")
+
+    command = f"UPDATE Users SET username='{username}', email='{email}', password='{password}', bio='{bio}' WHERE username = '{user}';"
+    mysqlcursor.execute(command)
+    mydb.commit()
+    session.pop('user', None)
+    session['user'] = username
+    return redirect("/profile")
 
 # get create post form
 

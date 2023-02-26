@@ -1,43 +1,45 @@
-{% extends '_layout.html' %}
-
-{% block title %}Artwork{% endblock %}
-
-{% block body %}
-<h1>This is the homepage</h1> <!-- sample content until we create home/landing page-->
+{% extends '_layout.html' %} {% block title %}Artwork{% endblock %} {% block
+body %}
+<h1>This is the Landing Page</h1>
+<!-- sample content until we create home/landing page-->
 
 {% for post in data %}
 
 <tr>
-        <div class = "card" style="width: 30%;"> <!-- card div for the posts-->
+  <div class="card" style="width: 30%">
+    <!-- card div for the posts-->
 
-            <img src="../static/images/{{post[4]}}"  width="100%">
-            
-            <td>
-                <p align="left" style="font-size:24px">
-                    <b>
-                        {{post[1]}}
-                    </b>
-                </p>
-            </td>
-            {{post[2]}}
-            <br>
-            <b>${{post[3]}}</b>
+    <img src="../static/images/{{post[4]}}" width="100%" />
 
-            <td>
-                <div class = "d-flex justify-content-end"> <!-- displays buttons on the same line-->
-                    <form>
-                        <button type="submit" class="btn btn-warning" formaction="/edit/{{post[0]}}">Edit</button>
-                    </form>
-                    
-                    <form action="{{ url_for('deletePost', id=post[0]) }}" method="POST">
-                        <input type="hidden" name="_method" value="DELETE">
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                </div>
+    <td>
+      <p align="left" style="font-size: 24px">
+        <b> {{post[1]}} </b>
+      </p>
+    </td>
+    {{post[2]}}
+    <br />
+    <b>${{post[3]}}</b>
 
-            </td>
-        </div>
+    <td>
+      <div class="d-flex justify-content-end">
+        <!-- displays buttons on the same line-->
+        <form>
+          <button
+            type="submit"
+            class="btn btn-warning"
+            formaction="/edit/{{post[0]}}"
+          >
+            Edit
+          </button>
+        </form>
+
+        <form action="{{ url_for('deletePost', id=post[0]) }}" method="POST">
+          <input type="hidden" name="_method" value="DELETE" />
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+      </div>
+    </td>
+  </div>
 </tr>
 
-{%endfor%}
-{% endblock %}
+{%endfor%} {% endblock %}
