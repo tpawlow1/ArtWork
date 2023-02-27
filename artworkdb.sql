@@ -5,7 +5,9 @@ USE `ArtWork`;
 CREATE TABLE IF NOT EXISTS `Users` (
     `username` varchar(40),
     `email` varchar(40), 
-    `password` varchar(40)
+    `password` varchar(40),
+    `bio` varchar(255),
+    `profilePicPath` varchar(2048)
 );
 
 CREATE TABLE IF NOT EXISTS`Posts`(
@@ -13,5 +15,6 @@ CREATE TABLE IF NOT EXISTS`Posts`(
     `title` varchar(50),
     `description` varchar(300),
     `price` numeric(10,2),
-    `filepath` varchar(2048)
+    `filepath` varchar(2048),
+    `user` varchar(40)
 );
