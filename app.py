@@ -34,10 +34,6 @@ def getposts():
 # get index
 @app.get("/")
 def index():
-    # sending all post entries to index to appear
-    mysqlcursor.execute("SELECT * FROM Posts")
-    data = mysqlcursor.fetchall()
-
     return render_template('index.html', data=data)
 
 
