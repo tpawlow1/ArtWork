@@ -214,14 +214,14 @@ def updatePost(id):
 
     newtitle = request.form.get('title')
     newdescription = request.form.get('description')
-    newprice = request.form.get('price')
+    
 
     addcom = ("UPDATE Posts \
                 SET title = (%s), \
-                description = (%s), \
-                price = (%s) WHERE id = (%s)")
+                description = (%s) \
+                 WHERE id = (%s)")
 
-    addvals = (newtitle, newdescription, newprice, id)
+    addvals = (newtitle, newdescription, id)
 
     mysqlcursor.execute(addcom, addvals)
 
