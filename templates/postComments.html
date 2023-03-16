@@ -3,10 +3,21 @@
 {% block title %}Edit {{post[1]}}{% endblock %}
 
 {% block body %}
-<h1>Viewing Post Comments!</h1>
-    
 
-          <img src="../static/images/{{post[3]}}" width="100%" />
+    <div style="display:grid; grid-template-columns: 1fr 1fr; column-gap: 25px;">
+        <div style="height: 250px; margin: 20px;">
           <h1>{{post[1]}}</h1>
-          <h1>{{post[2]}}</h1>
+          <img src="../static/images/{{post[3]}}" width="100%" />
+          <h3>Posted by: {{post[4]}}</h3>
+          <h4>{{post[2]}}</h4>
+        </div>
+        <div  style="height: 250px; margin: 20px; overflow-y:auto">
+            <h1>Comments</h1>
+            <form>
+                <textarea style="width: 80%;" id="comment" name="comment" rows="4" cols="50" placeholder="Leave a comment..."></textarea><br>
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+
+    </div>
 {% endblock %}
