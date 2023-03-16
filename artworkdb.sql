@@ -14,7 +14,6 @@ CREATE TABLE IF NOT EXISTS`Posts`(
     `id` varchar(100),
     `title` varchar(50),
     `description` varchar(300),
-    `price` numeric(10,2),
     `filepath` varchar(2048),
     `user` varchar(40)
 );
