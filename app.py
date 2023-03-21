@@ -90,7 +90,7 @@ def Signup():
         return render_template('index.html')
     # if all good, send to user table in database
     addcom = 'INSERT INTO Users VALUES (%s, %s, %s, %s, %s)'
-    addvals = (username, email, userpass1, '', 'default:profilepic.jpg')
+    addvals = (username, email, userpass1, '', 'default_profilepic.jpg')
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
     # sets user's username to user for the session
