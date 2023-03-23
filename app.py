@@ -86,7 +86,7 @@ def Signup():
     userpass2 = request.form.get('pass2')
     bio = 'Change me when you get a second!'
     propicpath = 'default_profilepic.jpg'
-    
+
     # verify passwords match
     if userpass1 != userpass2:
         # placeholder bounce back if no match
@@ -241,6 +241,11 @@ def deletePost(id):
     mydb.commit()
 
     return redirect('/homepage')
+
+
+@app.get("/msg/<uname>")
+def chatuser(uname):
+    return render_template('/msguser', user=uname)
 
 
 if __name__ == "__main__":
