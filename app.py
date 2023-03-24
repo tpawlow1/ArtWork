@@ -176,7 +176,7 @@ def createPost():
     # pull from post
     title = request.form.get('title')
     description = request.form.get('description')
-    price = request.form.get('price')
+   
 
     # pull file from form, get path
     file = request.files['file']
@@ -227,12 +227,34 @@ def updatePost(id):
 
     return redirect('/homepage')
 
-#send user to post page with comments
-@app.get("/comments/<id>")
+#send user to post page with comments, submit comment to db and reload page
+@app.route('/comments/<id>', methods=['GET','POST'])
 def getPostComments(id):
+
+    # grabbing post info 
     mysqlcursor.execute("SELECT * FROM Posts WHERE id = '" + str(id) + "'")
     data = mysqlcursor.fetchall()[0]
-    return render_template('postComments.html', post=data)
+
+    if request.method =='POST':
+        #info from comment
+        comment = request.form.get('comment')
+        username = session['user']
+    
+        # add comment info to comment table
+        addcom = 'INSERT INTO Comments VALUES (%s, %s, %s)'
+        addvals = (id, comment, username)
+        mysqlcursor.execute(addcom, addvals)
+        mydb.commit()
+
+
+     # grabbing comments info 
+    mysqlcursor.execute("SELECT * FROM Comments WHERE post_id = '" + str(id) + "'")
+    comments = mysqlcursor.fetchall()
+
+
+    return render_template('postComments.html', post=data, comments=comments)
+
+
 
 # delete post using POST request
 @app.route('/delete/<id>', methods=['POST'])

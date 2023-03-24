@@ -1,6 +1,6 @@
 {% extends '_layout.html' %}
 
-{% block title %}Edit {{post[1]}}{% endblock %}
+{% block title %}{{post[1]}}{% endblock %}
 
 {% block body %}
 
@@ -11,10 +11,22 @@
           <h3>Posted by: {{post[4]}}</h3>
           <h4>{{post[2]}}</h4>
         </div>
-        <div  style="height: 250px; margin: 20px; overflow-y:auto">
+       
+        <div  style="height: 250px; margin:20px;  ">
             <h1>Comments</h1>
-            <form>
-                <textarea style="width: 80%;" id="comment" name="comment" rows="4" cols="50" placeholder="Leave a comment..."></textarea><br>
+            
+            {%if post|length != 0%}
+            {%for i in range(comments|length)%}
+            <div style = "border-bottom: solid; margin: 30px;">
+            <h6> {{comments[i][2]}} said:</h6>
+            <p> {{comments[i][1]}}</p>
+            </div>
+            {%endfor%}
+            {%endif%}
+            
+
+            <form action="/comments/{{post[0]}}" method="POST" >
+                <textarea style="width: 100%;" id="comment" name="comment" rows="3" cols="50" placeholder="Leave a comment..." maxlength="300" padding-bottom="" required></textarea><br>
                 <input type="submit" value="Submit">
             </form>
         </div>
