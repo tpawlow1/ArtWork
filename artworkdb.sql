@@ -10,6 +10,12 @@ CREATE TABLE IF NOT EXISTS `Users` (
     `profilePicPath` varchar(2048)
 );
 
+CREATE TABLE IF NOT EXISTS`Follows`(
+    `follower` varchar(255),
+    `following` varchar(255),
+    PRIMARY KEY ('follower', 'following')
+);
+
 CREATE TABLE IF NOT EXISTS`Posts`(
     `id` varchar(100),
     `title` varchar(50),
@@ -33,3 +39,4 @@ CREATE TABLE IF NOT EXISTS`Messages`(
     `time` timestamp
 
 );
+
