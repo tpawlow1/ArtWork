@@ -14,8 +14,14 @@ CREATE TABLE IF NOT EXISTS`Posts`(
     `id` varchar(100),
     `title` varchar(50),
     `description` varchar(300),
-    `price` numeric(10,2),
     `filepath` varchar(2048),
+    `user` varchar(40)
+);
+
+
+CREATE TABLE IF NOT EXISTS `Comments`(
+    `post_id` varchar(100),
+    `comment` varchar(300),
     `user` varchar(40)
 );
 
@@ -25,4 +31,5 @@ CREATE TABLE IF NOT EXISTS`Messages`(
     `fromusername` varchar(40), 
     `content` varchar(300), 
     `time` timestamp
+
 );

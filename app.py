@@ -179,7 +179,7 @@ def createPost():
     # pull from post
     title = request.form.get('title')
     description = request.form.get('description')
-    price = request.form.get('price')
+   
 
     # pull file from form, get path
     file = request.files['file']
@@ -193,8 +193,8 @@ def createPost():
         file.save(filepath)
 
     # add to db
-    addcom = 'INSERT INTO Posts VALUES (%s, %s, %s, %s, %s, %s)'
-    addvals = (postid, title, description, price, file.filename, user)
+    addcom = 'INSERT INTO Posts VALUES (%s, %s, %s, %s, %s)'
+    addvals = (postid, title, description, file.filename, user)
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
 
@@ -217,22 +217,49 @@ def updatePost(id):
 
     newtitle = request.form.get('title')
     newdescription = request.form.get('description')
-    newprice = request.form.get('price')
+    
 
     addcom = ("UPDATE Posts \
                 SET title = (%s), \
-                description = (%s), \
-                price = (%s) WHERE id = (%s)")
+                description = (%s) \
+                 WHERE id = (%s)")
 
-    addvals = (newtitle, newdescription, newprice, id)
+    addvals = (newtitle, newdescription, id)
 
     mysqlcursor.execute(addcom, addvals)
 
     return redirect('/homepage')
 
+#send user to post page with comments, submit comment to db and reload page
+@app.route('/comments/<id>', methods=['GET','POST'])
+def getPostComments(id):
+
+    # grabbing post info 
+    mysqlcursor.execute("SELECT * FROM Posts WHERE id = '" + str(id) + "'")
+    data = mysqlcursor.fetchall()[0]
+
+    if request.method =='POST':
+        #info from comment
+        comment = request.form.get('comment')
+        username = session['user']
+    
+        # add comment info to comment table
+        addcom = 'INSERT INTO Comments VALUES (%s, %s, %s)'
+        addvals = (id, comment, username)
+        mysqlcursor.execute(addcom, addvals)
+        mydb.commit()
+
+
+     # grabbing comments info 
+    mysqlcursor.execute("SELECT * FROM Comments WHERE post_id = '" + str(id) + "'")
+    comments = mysqlcursor.fetchall()
+
+
+    return render_template('postComments.html', post=data, comments=comments)
+
+
+
 # delete post using POST request
-
-
 @app.route('/delete/<id>', methods=['POST'])
 def deletePost(id):
     deletecom = ("DELETE FROM Posts WHERE id = (%s)")

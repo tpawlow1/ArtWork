@@ -31,7 +31,7 @@
       <div class="card" style="width: 30%">
         <!-- card div for the posts-->
 
-        <img src="../static/images/{{post[i][4]}}" width="100%" />
+        <img src="../static/images/{{post[i][3]}}" width="100%" />
 
         <td>
           <p align="left" style="font-size: 24px">
@@ -40,11 +40,20 @@
         </td>
         {{post[i][2]}}
         <br />
-        <b>${{post[i][3]}}</b>
+        
 
         <td>
           <div class="d-flex justify-content-end">
             <!-- displays buttons on the same line-->
+            <form>
+              <button
+                type="submit"
+                class="btn btn-warning"
+                formaction="/comments/{{post[i][0]}}"
+              >
+                Comments
+              </button>
+            </form>
             <form>
               <button
                 type="submit"
