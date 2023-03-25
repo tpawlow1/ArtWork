@@ -84,13 +84,16 @@ def Signup():
     username = request.form.get('name')
     userpass1 = request.form.get('pass1')
     userpass2 = request.form.get('pass2')
+    bio = 'Change me when you get a second!'
+    propicpath = 'default_profilepic.jpg'
+
     # verify passwords match
     if userpass1 != userpass2:
         # placeholder bounce back if no match
         return render_template('index.html')
     # if all good, send to user table in database
     addcom = 'INSERT INTO Users VALUES (%s, %s, %s, %s, %s)'
-    addvals = (username, email, userpass1, '', 'default:profilepic.jpg')
+    addvals = (username, email, userpass1, bio, propicpath)
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
     # sets user's username to user for the session
@@ -113,7 +116,7 @@ def homepage():
 @app.get("/profile")
 def profilePage():
     user = session['user']
-    mysqlcursor.execute(f"SELECT * FROM Users WHERE username = '{user}'")
+    mysqlcursor.execute(f"SELECT * FROM Users WHERE username='{user}'")
     data = mysqlcursor.fetchall()
     return render_template("profilePage.html", data=data)
 
@@ -265,6 +268,11 @@ def deletePost(id):
     mydb.commit()
 
     return redirect('/homepage')
+
+
+@app.get("/msg/<uname>")
+def chatuser(uname):
+    return render_template('/msguser', user=uname)
 
 
 if __name__ == "__main__":

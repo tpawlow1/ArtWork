@@ -18,8 +18,18 @@ CREATE TABLE IF NOT EXISTS`Posts`(
     `user` varchar(40)
 );
 
+
 CREATE TABLE IF NOT EXISTS `Comments`(
     `post_id` varchar(100),
     `comment` varchar(300),
     `user` varchar(40)
+);
+
+CREATE TABLE IF NOT EXISTS`Messages`(
+    `id` varchar(100),
+    `tousername` varchar(40), 
+    `fromusername` varchar(40), 
+    `content` varchar(300), 
+    `time` timestamp
+
 );
