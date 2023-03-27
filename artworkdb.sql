@@ -7,7 +7,8 @@ CREATE TABLE IF NOT EXISTS `Users` (
     `email` varchar(40), 
     `password` varchar(40),
     `bio` varchar(255),
-    `profilePicPath` varchar(2048)
+    `profilePicPath` varchar(2048),
+    `isArtist` BOOLEAN DEFAULT false 
 );
 
 CREATE TABLE IF NOT EXISTS`Follows`(

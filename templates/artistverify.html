@@ -1,0 +1,16 @@
+{% extends '_layout.html' %} {% block title %}Artist Verification{% endblock %}
+{% block body %}
+<div>
+  <h1>Verify To Become An Artist!</h1>
+  <div>
+    <p>
+      By pressing the "Confirm" button, I agree that I have read the terms &
+      conditions for the artist profile.
+    </p>
+    <p>Pressing confirm will verify and give you your artist status!</p>
+    <form action="/artistverify" method="post">
+      <input type="submit" value="Confirm" />
+    </form>
+  </div>
+</div>
+{% endblock %}

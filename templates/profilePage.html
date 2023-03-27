@@ -65,13 +65,21 @@
   <body>
     <header class="p-5 text-bg-dark d-flex justify-content-between">
       <h1>ArtWork</h1>
+      
       <div class="justify-content-center">
+        {%if data[0][5] == 0%}
+        <a href="/artistverify" class="btn btn-danger">Verify Artist</a>
+        {%endif%}
         <a href="/homepage" class="btn btn-outline-light me-2">Homepage</a>
         <a href="/createpost" class="btn btn-outline-light me-2">New Post</a>
         <a href="/logout" class="btn btn-dark">Logout</a>
       </div>
     </header>
-    <div style="margin-top: 100px">
+
+    <div style="margin-top: 25px">
+      {%if data[0][5] == 1%}
+      <h1 style="font-style: italic; color: red;">ARTIST</h1>
+      {%endif%}
       <button onclick=openPicForm() style="background-color: inherit; border: none;" class="picBtn">
         <img src="../static/images/{{data[0][4]}}" width="300px" height="auto" style="clip-path: circle()">
       </button>

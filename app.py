@@ -179,7 +179,6 @@ def createPost():
     # pull from post
     title = request.form.get('title')
     description = request.form.get('description')
-   
 
     # pull file from form, get path
     file = request.files['file']
@@ -217,7 +216,6 @@ def updatePost(id):
 
     newtitle = request.form.get('title')
     newdescription = request.form.get('description')
-    
 
     addcom = ("UPDATE Posts \
                 SET title = (%s), \
@@ -230,33 +228,33 @@ def updatePost(id):
 
     return redirect('/homepage')
 
-#send user to post page with comments, submit comment to db and reload page
-@app.route('/comments/<id>', methods=['GET','POST'])
+# send user to post page with comments, submit comment to db and reload page
+
+
+@app.route('/comments/<id>', methods=['GET', 'POST'])
 def getPostComments(id):
 
-    # grabbing post info 
+    # grabbing post info
     mysqlcursor.execute("SELECT * FROM Posts WHERE id = '" + str(id) + "'")
     data = mysqlcursor.fetchall()[0]
 
-    if request.method =='POST':
-        #info from comment
+    if request.method == 'POST':
+        # info from comment
         comment = request.form.get('comment')
         username = session['user']
-    
+
         # add comment info to comment table
         addcom = 'INSERT INTO Comments VALUES (%s, %s, %s)'
         addvals = (id, comment, username)
         mysqlcursor.execute(addcom, addvals)
         mydb.commit()
 
-
-     # grabbing comments info 
-    mysqlcursor.execute("SELECT * FROM Comments WHERE post_id = '" + str(id) + "'")
+     # grabbing comments info
+    mysqlcursor.execute(
+        "SELECT * FROM Comments WHERE post_id = '" + str(id) + "'")
     comments = mysqlcursor.fetchall()
 
-
     return render_template('postComments.html', post=data, comments=comments)
-
 
 
 # delete post using POST request
@@ -270,17 +268,20 @@ def deletePost(id):
     return redirect('/homepage')
 
 # follow user
+
+
 @app.post('/follow')
 def follow_user():
     following = request.form.get('username')
     user = session['user']
 
-    mysqlcursor.execute(f"SELECT * FROM Follows WHERE follower='{user}' AND following='{following}'")
+    mysqlcursor.execute(
+        f"SELECT * FROM Follows WHERE follower='{user}' AND following='{following}'")
     existing_relationship = mysqlcursor.fetchone()
 
     if existing_relationship is not None:
         return redirect(url_for('homepage'))
-    
+
     addcom = 'INSERT INTO Follows (follower, following) VALUES (%s, %s)'
     addvals = (user, following)
     mysqlcursor.execute(addcom, addvals)
@@ -289,7 +290,9 @@ def follow_user():
 
     return redirect(url_for('homepage'))
 
-#unfollow user
+# unfollow user
+
+
 @app.post('/unfollow')
 def unfollow_user():
     unfollowing = request.form.get('username')
@@ -297,14 +300,29 @@ def unfollow_user():
 
     deletecom = f"DELETE FROM Follows WHERE follower='{user}' AND following='{unfollowing}'"
     mysqlcursor.execute(deletecom)
-    
+
     mydb.commit()
 
     return redirect(url_for('homepage'))
 
+
 @app.get("/msg/<uname>")
 def chatuser(uname):
     return render_template('/msguser', user=uname)
+
+
+@app.get("/artistverify")
+def getArtistVerify():
+    return render_template('artistverify.html')
+
+
+@app.post("/artistverify")
+def verifyArtist():
+    user = session['user']
+    mysqlcursor.execute(
+        f"UPDATE Users SET isArtist = true WHERE username = '{user}'")
+    mydb.commit()
+    return redirect('/profile')
 
 
 if __name__ == "__main__":
