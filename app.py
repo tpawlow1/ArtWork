@@ -192,8 +192,9 @@ def createPost():
         file.save(filepath)
 
     # add to db
-    addcom = 'INSERT INTO Posts VALUES (%s, %s, %s, %s, %s)'
-    addvals = (postid, title, description, file.filename, user)
+    addcom = 'INSERT INTO Posts VALUES (%s, %s, %s, %s, %s, %s, %s)'
+    addvals = (postid, title, description,
+               file.filename, user, 0, 0)
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
 
@@ -309,6 +310,40 @@ def unfollow_user():
 @app.get("/msg/<uname>")
 def chatuser(uname):
     return render_template('/msguser', user=uname)
+
+# like post using POST request
+
+
+@app.route('/like/<id>', methods=['POST'])
+def like_post(id):
+    likecom = ("UPDATE Posts SET likes = likes + 1 WHERE id = (%s)")
+    likevals = (id,)
+    mysqlcursor.execute(likecom, likevals)
+    mydb.commit()
+
+    likecom = ("UPDATE Posts SET dislikes = dislikes - 1 WHERE id = (%s)")
+    likevals = (id,)
+    mysqlcursor.execute(likecom, likevals)
+    mydb.commit()
+
+    return redirect('/homepage')
+
+# dislike post using POST request
+
+
+@app.route('/dislike/<id>', methods=['POST'])
+def dislike_post(id):
+    dislikecom = ("UPDATE Posts SET dislikes = dislikes + 1 WHERE id = (%s)")
+    dislikevals = (id,)
+    mysqlcursor.execute(dislikecom, dislikevals)
+    mydb.commit()
+
+    dislikecom = ("UPDATE Posts SET likes = likes - 1 WHERE id = (%s)")
+    dislikevals = (id,)
+    mysqlcursor.execute(dislikecom, dislikevals)
+    mydb.commit()
+
+    return redirect('/homepage')
 
 
 @app.get("/artistverify")

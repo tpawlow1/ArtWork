@@ -22,7 +22,9 @@ CREATE TABLE IF NOT EXISTS`Posts`(
     `title` varchar(50),
     `description` varchar(300),
     `filepath` varchar(2048),
-    `user` varchar(40)
+    `user` varchar(40),
+    `likes` INT,
+    `dislikes` INT
 );
 
 
