@@ -23,9 +23,15 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 def getposts():
-    user = session['user']
     # sending all post entries to index to appear
     mysqlcursor.execute(f"SELECT * FROM Posts")
+    data = mysqlcursor.fetchall()
+
+    return data
+
+
+def getauctions():
+    mysqlcursor.execute(f"SELECT * FROM Auctions WHERE isExpired = 0")
     data = mysqlcursor.fetchall()
 
     return data
@@ -92,8 +98,8 @@ def Signup():
         # placeholder bounce back if no match
         return render_template('index.html')
     # if all good, send to user table in database
-    addcom = 'INSERT INTO Users VALUES (%s, %s, %s, %s, %s)'
-    addvals = (username, email, userpass1, bio, propicpath)
+    addcom = 'INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s)'
+    addvals = (username, email, userpass1, bio, propicpath, '0')
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
     # sets user's username to user for the session
@@ -109,7 +115,6 @@ def Signup():
 def homepage():
     user = session['user']
     data = getposts()
-    print(len(data))
     return render_template("homepage.html", post=data, user=user)
 
 
@@ -345,10 +350,14 @@ def dislike_post(id):
 
     return redirect('/homepage')
 
+# navigate to artist verification using GET method
+
 
 @app.get("/artistverify")
 def getArtistVerify():
     return render_template('artistverify.html')
+
+# verify artist status using POST method
 
 
 @app.post("/artistverify")
@@ -358,6 +367,55 @@ def verifyArtist():
         f"UPDATE Users SET isArtist = true WHERE username = '{user}'")
     mydb.commit()
     return redirect('/profile')
+
+# load auctionHouse.html with proper credentials with GET method
+
+
+@app.get("/auctionhouse")
+def getAuctionHouse():
+    user = session['user']
+    mysqlcursor.execute(f"SELECT * FROM Users WHERE username='{user}'")
+    data = mysqlcursor.fetchall()
+    auction = getauctions()
+    return render_template("auctionHouse.html", data=data, auction=auction)
+
+# creating an Auction post with the POST method
+
+
+@app.post("/createAuction")
+def createAuctionPost():
+    user = session['user']
+    # generate unique id
+    auctionid = str(uuid.uuid4())
+
+    # pull from post
+    title = request.form.get('title')
+    description = request.form.get('description')
+    endDate = request.form.get('endDate')
+    endTime = request.form.get('endTime')
+    price = request.form.get('price')
+
+    # formatting the date and time for MySQL
+    endDate = endDate.split('/')
+    auctionEnd = f'{endDate[2]}-{endDate[1]}-{endDate[0]} {endTime}:00'
+
+    # pull file from form, get path
+    file = request.files['file']
+
+    # If the user does not select a file, the browser submits an
+    # empty file without a filename.
+    if file.filename == '':
+        print('No selected file')
+        return redirect('index.html')
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    if file:
+        file.save(filepath)
+
+    # add to db
+    mysqlcursor.execute(
+        f"INSERT INTO Auctions (auction_id, title, description, filepath, user, endTime, price, isExpired) VALUES ('{auctionid}', '{title}', '{description}', '{file.filename}', '{user}', '{auctionEnd}', '{price}', 0)")
+    mydb.commit()
+    return redirect('/auctionhouse')
 
 
 if __name__ == "__main__":

@@ -43,3 +43,15 @@ CREATE TABLE IF NOT EXISTS`Messages`(
 
 );
 
+CREATE TABLE IF NOT EXISTS `Auctions` (
+    `auction_id` varchar(100),
+    `title` varchar(40), 
+    `description` varchar(300),
+    `filepath` varchar(2048),
+    `user` varchar(40),
+    `createdTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	`endTime` DATETIME NOT NULL,
+    `price` DOUBLE,
+	`isExpired` BOOLEAN DEFAULT false
+);
+
