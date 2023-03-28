@@ -302,9 +302,34 @@ def unfollow_user():
 
     return redirect(url_for('homepage'))
 
-@app.get("/msg/<uname>")
-def chatuser(uname):
-    return render_template('/msguser', user=uname)
+# render message page
+@app.get("/msg/<uusername>")
+def initconvo(username):
+    # will need to query database to pull user information
+
+    # also query to see if there are previous messages that need to be presented
+    prevchats = 'none'
+
+
+    return render_template('/msguser', user=username, history = prevchats)
+
+# handle message sent
+@app.post("/msg/<username>")
+def chatuser(message, username): 
+    # take message sent by user and get time sent
+    content = message
+    touser = username
+    fromuser = session['user'] # pull current user's username 
+    time = 'none' # pull time of msg sent in timedate type
+    
+    # push to database
+    addcom = "INSERT INTO Messages VALUES (%s, %s, %s, %s)"
+    addvals = (touser, fromuser, content, time)
+    mysqlcursor.execute(addcom, addvals)
+
+    # redirect to the same page
+    return redirect(f'/msg/{touser}')
+
 
 
 if __name__ == "__main__":

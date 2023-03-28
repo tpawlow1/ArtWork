@@ -1,0 +1,18 @@
+{% extends '_layout.html' %}
+
+{% block title %}Message {% endblock %} <!-- add user as var in title-->
+
+{% block body %}
+
+<!-- left side holds artist information if coming from page, post info if coming from post-->
+
+<!-- right side is message list, use jinja python to pull from database-->
+
+<!-- bottom of right will be form for entering messages-->
+
+<form action="/msg/{{user}}" method="POST">
+
+    <button>Send</button>
+</form>
+
+{% endblock %}
