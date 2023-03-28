@@ -1,10 +1,10 @@
 {% extends '_layout.html' %}
 
-{% block title %}Message {% endblock %} <!-- add user as var in title-->
+{% block title %}Message with user {{user}} {% endblock %} <!-- add user as var in title-->
 
 {% block body %}
 
-<!-- left side holds artist information if coming from page, post info if coming from post-->
+<!-- left side holds artist information-->
 
 <!-- right side is message list, use jinja python to pull from database-->
 

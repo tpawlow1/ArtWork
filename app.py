@@ -306,12 +306,14 @@ def unfollow_user():
 @app.get("/msg/<uusername>")
 def initconvo(username):
     # will need to query database to pull user information
+    chatterquery = f"SELECT * FROM Users WHERE username='{username}'"
+    oppuser = mysqlcursor.execute(chatterquery)
 
     # also query to see if there are previous messages that need to be presented
-    prevchats = 'none'
+    chatquery = f"SELECT * FROM Messages WHERE tousername='{username}' AND fromusername='{session['user']}'"
+    prevchats = mysqlcursor.execute(chatquery)
 
-
-    return render_template('/msguser', user=username, history = prevchats)
+    return render_template('/msguser', user=oppuser, history = prevchats)
 
 # handle message sent
 @app.post("/msg/<username>")
@@ -329,8 +331,6 @@ def chatuser(message, username):
 
     # redirect to the same page
     return redirect(f'/msg/{touser}')
-
-
 
 if __name__ == "__main__":
     app.run()
