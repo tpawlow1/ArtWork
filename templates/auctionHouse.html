@@ -81,6 +81,7 @@
     {%if auction|length == 0%}
     <h2>No Posts!</h2>
     {%else%} {%for i in range(auction|length)%}
+    {%if auction[0][8] == 0%}
     <tr>
       <div class="card" style="width: 30%">
         <!-- card div for the auctions-->
@@ -104,6 +105,7 @@
 
       </div>
     </tr>
+    {%endif%}
     {%endfor%} {%endif%}
     <div id="createAuctionOverlay" class="overlay">
         <div class="wrap">
@@ -122,7 +124,7 @@
                     <td><label for="endTime">End Time</td>
                 </tr>
                 <tr>
-                    <td><input type="text" name="endDate" placeholder="DD/MM/YYYY" required></td>
+                    <td><input type="text" name="endDate" placeholder="MM/DD/YYYY" required></td>
                     <td><input type="text" name="endTime" placeholder="HH:MM (Military)" required></td>
                 </tr>
                 </table>

@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, session, url_for
 import mysql.connector
 import os
 import uuid
+import datetime
 
 
 app = Flask(__name__)
@@ -376,6 +377,10 @@ def getAuctionHouse():
     user = session['user']
     mysqlcursor.execute(f"SELECT * FROM Users WHERE username='{user}'")
     data = mysqlcursor.fetchall()
+
+    # updates status of auctions whenever page is refreshed
+    mysqlcursor.execute(
+        "UPDATE Auctions SET isExpired = true WHERE NOW() > endTime;")
     auction = getauctions()
     return render_template("auctionHouse.html", data=data, auction=auction)
 
@@ -397,7 +402,7 @@ def createAuctionPost():
 
     # formatting the date and time for MySQL
     endDate = endDate.split('/')
-    auctionEnd = f'{endDate[2]}-{endDate[1]}-{endDate[0]} {endTime}:00'
+    auctionEnd = f'{endDate[2]}-{endDate[0]}-{endDate[1]} {endTime}:00'
 
     # pull file from form, get path
     file = request.files['file']
