@@ -19,7 +19,7 @@ mydb = mysql.connector.connect(
     database="ArtWork"
 )
 
-mysqlcursor = mydb.cursor()
+mysqlcursor = mydb.cursor(buffered=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
@@ -308,7 +308,11 @@ def unfollow_user():
 def initconvo(username):
     # will need to query database to pull user information
     chatterquery = f"SELECT * FROM Users WHERE username='{username}'"
-    oppuser = mysqlcursor.execute(chatterquery)
+    mysqlcursor.execute(chatterquery)
+
+    oppuser = mysqlcursor.fetchone()
+
+    print(username)
 
     print(oppuser)
 

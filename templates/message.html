@@ -11,7 +11,7 @@
       integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
       crossorigin="anonymous"
     />
-    <title>Message with user</title>
+    <title>Message with {{user[0]}}</title>
   </head>
   <body>
     <!-- navbar for website-->
@@ -20,7 +20,7 @@
       <div>
         <div class="justify-content-center">
           <a href="/createpost" class="btn btn-outline-light me-2">New Post</a>
-          <a href="/profile" class="btn btn-warning">{{user}}</a>
+          <a href="/profile" class="btn btn-warning">{{user[0]}}</a>
         </div>
       </div>
     </header>
@@ -31,11 +31,13 @@
 
 <!-- bottom of right will be form for entering messages-->
 
-<form action="/msg/{{user}}" method="POST">
+<form action="/msg/{{user[0]}}" method="POST">
     <td>
         <div class="d-flex justify-content-end">
-            <input type="" class="form-control" name="content" placeholder="" required>
-            <button>Send</button>
+            <form>
+                <input type="" class="form-control" name="content" placeholder="" required>
+                <button>Send</button>
+            </form>
         </div>
     </td>
 </form>
