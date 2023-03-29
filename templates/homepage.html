@@ -19,6 +19,7 @@
       <h1>ArtWork</h1>
       <div>
         <div class="justify-content-center">
+          <a href="/auctionhouse" class="btn btn-dark">Auction House</a>
           <a href="/profile" class="btn btn-warning">{{user}}</a>
         </div>
       </div>
@@ -43,39 +44,45 @@
 
         <!-- displays username of the poster -->
         <p>Posted by {{post[i][4]}}</p>
-        
+
+        <div class="d-flex justify-content-end">
+          <form method="post">
+            <button
+              type="submit"
+              class="btn-warning"
+              formaction="/dislike/{{post[i][0]}}"
+            >
+              Dislike
+            </button>
+          </form>
+
+          <form method="post">
+            <button
+              type="submit"
+              class="btn-warning"
+              formaction="/like/{{post[i][0]}}"
+            >
+              Like
+            </button>
+          </form>
+        </div>
+
         <td>
           <div class="d-flex justify-content-end">
             <!-- displays buttons on the same line-->
-            <form 
-              action="{{ url_for('follow_user') }}" 
-              method="post">
-              <input 
-                type="hidden" 
-                name="username" 
-                value={{post[i][4]}}>
-              <button 
-                type="submit" 
-                class="btn btn-dark"
-                >
-                Follow
-              </button>
-            </form>
 
-            <form 
-              action="{{ url_for('unfollow_user') }}"
-              method="post">
-              <input 
-                type="hidden" 
-                name="username" 
-                value={{post[i][4]}}>
-              <button 
-                type="submit" 
-                class="btn btn-dark"
-                >
-                Unfollow
-              </button>
-            </form>
+            <!-- only show to users other than poster -->
+            {% if user != post[i][4] %}
+              <form action="{{ url_for('follow_user') }}" method="post">
+                <input type="hidden" name="username" value="{{post[i][4]}}" />
+                <button type="submit" class="btn btn-dark">Follow</button>
+              </form>
+
+              <form action="{{ url_for('unfollow_user') }}" method="post">
+                <input type="hidden" name="username" value="{{post[i][4]}}" />
+                <button type="submit" class="btn btn-dark">Unfollow</button>
+              </form>
+            {% endif %}
 
             <form>
               <button
@@ -87,23 +94,27 @@
               </button>
             </form>
 
-            <form>
-              <button
-                type="submit"
-                class="btn btn-warning"
-                formaction="/edit/{{post[i][0]}}"
-              >
-                Edit
-              </button>
-            </form>
 
-            <form
-              action="{{ url_for('deletePost', id=post[i][0]) }}"
-              method="POST"
-            >
-              <input type="hidden" name="_method" value="DELETE" />
-              <button type="submit" class="btn btn-danger">Delete</button>
-            </form>
+            <!-- only display to owner of post -->
+            {% if user == post[i][4] %}
+              <form>
+                <button
+                  type="submit"
+                  class="btn btn-warning"
+                  formaction="/edit/{{post[i][0]}}"
+                >
+                  Edit
+                </button>
+              </form>
+
+              <form
+                action="{{ url_for('deletePost', id=post[i][0]) }}"
+                method="POST"
+              >
+                <input type="hidden" name="_method" value="DELETE" />
+                <button type="submit" class="btn btn-danger">Delete</button>
+              </form>
+            {% endif %}
           </div>
         </td>
       </div>
