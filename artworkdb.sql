@@ -3,7 +3,7 @@ CREATE DATABASE IF NOT EXISTS `ArtWork`;
 USE `ArtWork`;
 
 CREATE TABLE IF NOT EXISTS `Users` (
-    `username` varchar(40),
+    `username` varchar(40) PRIMARY KEY,
     `email` varchar(40), 
     `password` varchar(40),
     `bio` varchar(255),
@@ -13,11 +13,11 @@ CREATE TABLE IF NOT EXISTS `Users` (
 CREATE TABLE IF NOT EXISTS`Follows`(
     `follower` varchar(255),
     `following` varchar(255),
-    PRIMARY KEY ('follower', 'following')
+    PRIMARY KEY (`follower`, `following`)
 );
 
 CREATE TABLE IF NOT EXISTS`Posts`(
-    `id` varchar(100),
+    `id` varchar(100) PRIMARY KEY,
     `title` varchar(50),
     `description` varchar(300),
     `filepath` varchar(2048),
@@ -39,6 +39,6 @@ CREATE TABLE IF NOT EXISTS`Messages`(
     `fromusername` varchar(40), 
     `content` varchar(300), 
     `time` timestamp
-
 );
+
 
