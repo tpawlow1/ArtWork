@@ -316,15 +316,39 @@ def chatuser(uname):
 
 @app.route('/like/<id>', methods=['POST'])
 def like_post(id):
-    likecom = ("UPDATE Posts SET likes = likes + 1 WHERE id = (%s)")
-    likevals = (id,)
-    mysqlcursor.execute(likecom, likevals)
-    mydb.commit()
+    user = session['user']
+    com = "SELECT * FROM Post_Interactions WHERE pi_userID=(%s) AND pi_postID=(%s)"
+    vals = (user, id)
+    mysqlcursor.execute(com, vals)
+    likeEntry = mysqlcursor.fetchall()
 
-    likecom = ("UPDATE Posts SET dislikes = dislikes - 1 WHERE id = (%s)")
-    likevals = (id,)
-    mysqlcursor.execute(likecom, likevals)
-    mydb.commit()
+    if likeEntry:
+        if not likeEntry[0][2]:
+            com = "UPDATE Post_Interactions SET pi_likes = true, pi_dislikes = false WHERE pi_userID = (%s) AND pi_postID = (%s)"
+            vals = (user, id)
+            mysqlcursor.execute(com, vals)
+            mydb.commit()
+
+            likecom = ("UPDATE Posts SET likes = likes + 1 WHERE id = (%s)")
+            likevals = (id,)
+            mysqlcursor.execute(likecom, likevals)
+            mydb.commit()
+
+            likecom = (
+                "UPDATE Posts SET dislikes = dislikes - 1 WHERE id = (%s)")
+            likevals = (id,)
+            mysqlcursor.execute(likecom, likevals)
+            mydb.commit()
+    else:
+        com = "INSERT INTO Post_Interactions VALUES (%s, %s, true, false)"
+        vals = (user, id)
+        mysqlcursor.execute(com, vals)
+        mydb.commit()
+
+        dislikecom = ("UPDATE Posts SET likes = likes + 1 WHERE id = (%s)")
+        dislikevals = (id,)
+        mysqlcursor.execute(dislikecom, dislikevals)
+        mydb.commit()
 
     return redirect('/homepage')
 
@@ -333,15 +357,40 @@ def like_post(id):
 
 @app.route('/dislike/<id>', methods=['POST'])
 def dislike_post(id):
-    dislikecom = ("UPDATE Posts SET dislikes = dislikes + 1 WHERE id = (%s)")
-    dislikevals = (id,)
-    mysqlcursor.execute(dislikecom, dislikevals)
-    mydb.commit()
+    user = session['user']
+    com = "SELECT * FROM Post_Interactions WHERE pi_userID = (%s) AND pi_postID = (%s)"
+    vals = (user, id)
+    mysqlcursor.execute(com, vals)
+    dislikeEntry = mysqlcursor.fetchall()
 
-    dislikecom = ("UPDATE Posts SET likes = likes - 1 WHERE id = (%s)")
-    dislikevals = (id,)
-    mysqlcursor.execute(dislikecom, dislikevals)
-    mydb.commit()
+    if dislikeEntry:
+        if not dislikeEntry[0][3]:
+            com = "UPDATE Post_Interactions SET pi_likes = false, pi_dislikes = true WHERE pi_userID = (%s) AND pi_postID = (%s)"
+            vals = (user, id)
+            mysqlcursor.execute(com, vals)
+            mydb.commit()
+
+            dislikecom = (
+                "UPDATE Posts SET dislikes = dislikes + 1 WHERE id = (%s)")
+            dislikevals = (id,)
+            mysqlcursor.execute(dislikecom, dislikevals)
+            mydb.commit()
+
+            dislikecom = ("UPDATE Posts SET likes = likes - 1 WHERE id = (%s)")
+            dislikevals = (id,)
+            mysqlcursor.execute(dislikecom, dislikevals)
+            mydb.commit()
+    else:
+        com = "INSERT INTO Post_Interactions VALUES (%s, %s, false, true)"
+        vals = (user, id)
+        mysqlcursor.execute(com, vals)
+        mydb.commit()
+
+        dislikecom = (
+            "UPDATE Posts SET dislikes = dislikes + 1 WHERE id = (%s)")
+        dislikevals = (id,)
+        mysqlcursor.execute(dislikecom, dislikevals)
+        mydb.commit()
 
     return redirect('/homepage')
 

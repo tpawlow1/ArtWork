@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS`Follows`(
 );
 
 CREATE TABLE IF NOT EXISTS`Posts`(
-    `id` varchar(100),
+    `id` varchar(100) PRIMARY KEY,
     `title` varchar(50),
     `description` varchar(300),
     `filepath` varchar(2048),
@@ -41,4 +41,11 @@ CREATE TABLE IF NOT EXISTS`Messages`(
     `time` timestamp
 );
 
-
+CREATE TABLE IF NOT EXISTS `Post_Interactions` (	
+	`pi_userID` varchar(100),
+	`pi_postID` varchar(100),
+    `pi_likes` BOOLEAN DEFAULT false,
+    `pi_dislikes` BOOLEAN DEFAULT false,
+    FOREIGN KEY (`pi_userID`) REFERENCES Users(`username`),
+    FOREIGN KEY (`pi_postID`) REFERENCES Posts(`id`)
+);
