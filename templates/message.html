@@ -11,8 +11,12 @@
 <!-- bottom of right will be form for entering messages-->
 
 <form action="/msg/{{user}}" method="POST">
-
-    <button>Send</button>
+    <td>
+        <div class="d-flex justify-content-end">
+            <input type="" class="form-control" name="content" placeholder="" required>
+            <button>Send</button>
+        </div>
+    </td>
 </form>
 
 {% endblock %}

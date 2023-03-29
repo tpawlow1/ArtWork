@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, session, url_for
+from datetime import datetime
 import mysql.connector
 import os
 import uuid
@@ -303,23 +304,26 @@ def unfollow_user():
     return redirect(url_for('homepage'))
 
 # render message page
-@app.get("/msg/<uusername>")
+@app.get("/msg/<username>")
 def initconvo(username):
     # will need to query database to pull user information
     chatterquery = f"SELECT * FROM Users WHERE username='{username}'"
     oppuser = mysqlcursor.execute(chatterquery)
 
     # also query to see if there are previous messages that need to be presented
-    chatquery = f"SELECT * FROM Messages WHERE tousername='{username}' AND fromusername='{session['user']}'"
-    prevchats = mysqlcursor.execute(chatquery)
+    try:
+        chatquery = f"SELECT * FROM Messages WHERE tousername='{username}' AND fromusername='{session['user']}'"
+        prevchats = mysqlcursor.execute(chatquery)
+    except: 
+        prevchats = None
 
-    return render_template('/msguser', user=oppuser, history = prevchats)
+    return render_template('message.html', user=oppuser, history = prevchats)
 
 # handle message sent
 @app.post("/msg/<username>")
-def chatuser(message, username): 
+def chatuser(username): 
     # take message sent by user and get time sent
-    content = message
+    content = request.form.get('content')
     touser = username
     fromuser = session['user'] # pull current user's username 
     time = 'none' # pull time of msg sent in timedate type
