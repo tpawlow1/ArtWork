@@ -332,8 +332,9 @@ def chatuser(username):
     datetimestring = now.strftime("%Y/%m/%d %H:%M:%S") # pull time of msg sent in timedate type https://sebhastian.com/mysql-incorrect-datetime-value/
     
     # push to database
-    addcom = "INSERT INTO Messages VALUES (%s, %s, %s, %s)"
+    addcom = "INSERT INTO Messages (tousername, fromusername, content, timesent) VALUES (%s, %s, %s, %s)"
     addvals = (touser, fromuser, content, datetimestring)
+    print(addvals)
     mysqlcursor.execute(addcom, addvals)
 
     # redirect to the same page
