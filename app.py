@@ -312,10 +312,6 @@ def initconvo(username):
 
     oppuser = mysqlcursor.fetchone()
 
-    print(username)
-
-    print(oppuser)
-
     # also query to see if there are previous messages that need to be presented
     try:
         chatquery = f"SELECT * FROM Messages WHERE tousername='{username}' AND fromusername='{session['user']}'"
@@ -333,7 +329,7 @@ def chatuser(username):
     touser = username
     fromuser = session['user'] # pull current user's username 
     now = datetime.now()
-    datetimestring = now.strftime("%d/%m/%Y %H:%M:%S") # pull time of msg sent in timedate type
+    datetimestring = now.strftime("%Y/%m/%d %H:%M:%S") # pull time of msg sent in timedate type https://sebhastian.com/mysql-incorrect-datetime-value/
     
     # push to database
     addcom = "INSERT INTO Messages VALUES (%s, %s, %s, %s)"
