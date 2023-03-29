@@ -124,8 +124,8 @@
                     <td><label for="endTime">End Time</td>
                 </tr>
                 <tr>
-                    <td><input type="text" name="endDate" placeholder="MM/DD/YYYY" required></td>
-                    <td><input type="text" name="endTime" placeholder="HH:MM (Military)" required></td>
+                    <td><input type="text" name="endDate" placeholder="MM/DD/YYYY" required pattern="^(0[1-9]|1[0-2])\/(0[1-9]|[1-2][0-9]|3[0-1])\/(19|20)\d{2}$"></td>
+                    <td><input type="text" name="endTime" placeholder="HH:MM (Military)" required pattern="^([0-1][0-9]|2[0-3]):([0-5][0-9])$"></td>
                 </tr>
                 </table>
               <label for="price">Price</label>
