@@ -19,6 +19,7 @@
       <h1>ArtWork</h1>
       <div>
         <div class="justify-content-center">
+          <a href="/auctionhouse" class="btn btn-dark">Auction House</a>
           <a href="/profile" class="btn btn-warning">{{user}}</a>
         </div>
       </div>
@@ -43,38 +44,40 @@
 
         <!-- displays username of the poster -->
         <p>Posted by {{post[i][4]}}</p>
-        
+
+        <div class="d-flex justify-content-end">
+          <form method="post">
+            <button
+              type="submit"
+              class="btn-warning"
+              formaction="/dislike/{{post[i][0]}}"
+            >
+              Dislike
+            </button>
+          </form>
+
+          <form method="post">
+            <button
+              type="submit"
+              class="btn-warning"
+              formaction="/like/{{post[i][0]}}"
+            >
+              Like
+            </button>
+          </form>
+        </div>
+
         <td>
           <div class="d-flex justify-content-end">
             <!-- displays buttons on the same line-->
-            <form 
-              action="{{ url_for('follow_user') }}" 
-              method="post">
-              <input 
-                type="hidden" 
-                name="username" 
-                value={{post[i][4]}}>
-              <button 
-                type="submit" 
-                class="btn btn-dark"
-                >
-                Follow
-              </button>
+            <form action="{{ url_for('follow_user') }}" method="post">
+              <input type="hidden" name="username" value="{{post[i][4]}}" />
+              <button type="submit" class="btn btn-dark">Follow</button>
             </form>
 
-            <form 
-              action="{{ url_for('unfollow_user') }}"
-              method="post">
-              <input 
-                type="hidden" 
-                name="username" 
-                value={{post[i][4]}}>
-              <button 
-                type="submit" 
-                class="btn btn-dark"
-                >
-                Unfollow
-              </button>
+            <form action="{{ url_for('unfollow_user') }}" method="post">
+              <input type="hidden" name="username" value="{{post[i][4]}}" />
+              <button type="submit" class="btn btn-dark">Unfollow</button>
             </form>
 
             <form>
