@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS`Follows`(
 );
 
 CREATE TABLE IF NOT EXISTS`Posts`(
-    `id` varchar(100) PRIMARY KEY,
+    `id` varchar(100),
     `title` varchar(50),
     `description` varchar(300),
     `filepath` varchar(2048),
