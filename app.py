@@ -310,6 +310,8 @@ def initconvo(username):
     chatterquery = f"SELECT * FROM Users WHERE username='{username}'"
     oppuser = mysqlcursor.execute(chatterquery)
 
+    print(oppuser)
+
     # also query to see if there are previous messages that need to be presented
     try:
         chatquery = f"SELECT * FROM Messages WHERE tousername='{username}' AND fromusername='{session['user']}'"
@@ -326,11 +328,12 @@ def chatuser(username):
     content = request.form.get('content')
     touser = username
     fromuser = session['user'] # pull current user's username 
-    time = 'none' # pull time of msg sent in timedate type
+    now = datetime.now()
+    datetimestring = now.strftime("%d/%m/%Y %H:%M:%S") # pull time of msg sent in timedate type
     
     # push to database
     addcom = "INSERT INTO Messages VALUES (%s, %s, %s, %s)"
-    addvals = (touser, fromuser, content, time)
+    addvals = (touser, fromuser, content, datetimestring)
     mysqlcursor.execute(addcom, addvals)
 
     # redirect to the same page
