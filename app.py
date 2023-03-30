@@ -3,6 +3,7 @@ from datetime import datetime
 import mysql.connector
 import os
 import uuid
+import datetime
 
 
 app = Flask(__name__)
@@ -24,9 +25,15 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 def getposts():
-    user = session['user']
     # sending all post entries to index to appear
     mysqlcursor.execute(f"SELECT * FROM Posts")
+    data = mysqlcursor.fetchall()
+
+    return data
+
+
+def getauctions():
+    mysqlcursor.execute(f"SELECT * FROM Auctions WHERE isExpired = 0")
     data = mysqlcursor.fetchall()
 
     return data
@@ -93,8 +100,8 @@ def Signup():
         # placeholder bounce back if no match
         return render_template('index.html')
     # if all good, send to user table in database
-    addcom = 'INSERT INTO Users VALUES (%s, %s, %s, %s, %s)'
-    addvals = (username, email, userpass1, bio, propicpath)
+    addcom = 'INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s)'
+    addvals = (username, email, userpass1, bio, propicpath, '0')
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
     # sets user's username to user for the session
@@ -110,7 +117,6 @@ def Signup():
 def homepage():
     user = session['user']
     data = getposts()
-    print(len(data))
     return render_template("homepage.html", post=data, user=user)
 
 
@@ -180,7 +186,6 @@ def createPost():
     # pull from post
     title = request.form.get('title')
     description = request.form.get('description')
-   
 
     # pull file from form, get path
     file = request.files['file']
@@ -194,8 +199,9 @@ def createPost():
         file.save(filepath)
 
     # add to db
-    addcom = 'INSERT INTO Posts VALUES (%s, %s, %s, %s, %s)'
-    addvals = (postid, title, description, file.filename, user)
+    addcom = 'INSERT INTO Posts VALUES (%s, %s, %s, %s, %s, %s, %s)'
+    addvals = (postid, title, description,
+               file.filename, user, 0, 0)
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
 
@@ -218,7 +224,6 @@ def updatePost(id):
 
     newtitle = request.form.get('title')
     newdescription = request.form.get('description')
-    
 
     addcom = ("UPDATE Posts \
                 SET title = (%s), \
@@ -231,33 +236,33 @@ def updatePost(id):
 
     return redirect('/homepage')
 
-#send user to post page with comments, submit comment to db and reload page
-@app.route('/comments/<id>', methods=['GET','POST'])
+# send user to post page with comments, submit comment to db and reload page
+
+
+@app.route('/comments/<id>', methods=['GET', 'POST'])
 def getPostComments(id):
 
-    # grabbing post info 
+    # grabbing post info
     mysqlcursor.execute("SELECT * FROM Posts WHERE id = '" + str(id) + "'")
     data = mysqlcursor.fetchall()[0]
 
-    if request.method =='POST':
-        #info from comment
+    if request.method == 'POST':
+        # info from comment
         comment = request.form.get('comment')
         username = session['user']
-    
+
         # add comment info to comment table
         addcom = 'INSERT INTO Comments VALUES (%s, %s, %s)'
         addvals = (id, comment, username)
         mysqlcursor.execute(addcom, addvals)
         mydb.commit()
 
-
-     # grabbing comments info 
-    mysqlcursor.execute("SELECT * FROM Comments WHERE post_id = '" + str(id) + "'")
+     # grabbing comments info
+    mysqlcursor.execute(
+        "SELECT * FROM Comments WHERE post_id = '" + str(id) + "'")
     comments = mysqlcursor.fetchall()
 
-
     return render_template('postComments.html', post=data, comments=comments)
-
 
 
 # delete post using POST request
@@ -271,17 +276,20 @@ def deletePost(id):
     return redirect('/homepage')
 
 # follow user
+
+
 @app.post('/follow')
 def follow_user():
     following = request.form.get('username')
     user = session['user']
 
-    mysqlcursor.execute(f"SELECT * FROM Follows WHERE follower='{user}' AND following='{following}'")
+    mysqlcursor.execute(
+        f"SELECT * FROM Follows WHERE follower='{user}' AND following='{following}'")
     existing_relationship = mysqlcursor.fetchone()
 
     if existing_relationship is not None:
         return redirect(url_for('homepage'))
-    
+
     addcom = 'INSERT INTO Follows (follower, following) VALUES (%s, %s)'
     addvals = (user, following)
     mysqlcursor.execute(addcom, addvals)
@@ -290,7 +298,9 @@ def follow_user():
 
     return redirect(url_for('homepage'))
 
-#unfollow user
+# unfollow user
+
+
 @app.post('/unfollow')
 def unfollow_user():
     unfollowing = request.form.get('username')
@@ -298,7 +308,7 @@ def unfollow_user():
 
     deletecom = f"DELETE FROM Follows WHERE follower='{user}' AND following='{unfollowing}'"
     mysqlcursor.execute(deletecom)
-    
+
     mydb.commit()
 
     return redirect(url_for('homepage'))
@@ -343,6 +353,157 @@ def chatuser(username):
 
     # redirect to the same page
     return redirect(f'/msg/{touser}')
+
+@app.route('/like/<id>', methods=['POST'])
+def like_post(id):
+    user = session['user']
+    com = "SELECT * FROM Post_Interactions WHERE pi_userID=(%s) AND pi_postID=(%s)"
+    vals = (user, id)
+    mysqlcursor.execute(com, vals)
+    likeEntry = mysqlcursor.fetchall()
+
+    if likeEntry:
+        if not likeEntry[0][2]:
+            com = "UPDATE Post_Interactions SET pi_likes = true, pi_dislikes = false WHERE pi_userID = (%s) AND pi_postID = (%s)"
+            vals = (user, id)
+            mysqlcursor.execute(com, vals)
+            mydb.commit()
+
+            likecom = ("UPDATE Posts SET likes = likes + 1 WHERE id = (%s)")
+            likevals = (id,)
+            mysqlcursor.execute(likecom, likevals)
+            mydb.commit()
+
+            likecom = (
+                "UPDATE Posts SET dislikes = dislikes - 1 WHERE id = (%s)")
+            likevals = (id,)
+            mysqlcursor.execute(likecom, likevals)
+            mydb.commit()
+    else:
+        com = "INSERT INTO Post_Interactions VALUES (%s, %s, true, false)"
+        vals = (user, id)
+        mysqlcursor.execute(com, vals)
+        mydb.commit()
+
+        dislikecom = ("UPDATE Posts SET likes = likes + 1 WHERE id = (%s)")
+        dislikevals = (id,)
+        mysqlcursor.execute(dislikecom, dislikevals)
+        mydb.commit()
+
+    return redirect('/homepage')
+
+# dislike post using POST request
+
+
+@app.route('/dislike/<id>', methods=['POST'])
+def dislike_post(id):
+    user = session['user']
+    com = "SELECT * FROM Post_Interactions WHERE pi_userID = (%s) AND pi_postID = (%s)"
+    vals = (user, id)
+    mysqlcursor.execute(com, vals)
+    dislikeEntry = mysqlcursor.fetchall()
+
+    if dislikeEntry:
+        if not dislikeEntry[0][3]:
+            com = "UPDATE Post_Interactions SET pi_likes = false, pi_dislikes = true WHERE pi_userID = (%s) AND pi_postID = (%s)"
+            vals = (user, id)
+            mysqlcursor.execute(com, vals)
+            mydb.commit()
+
+            dislikecom = (
+                "UPDATE Posts SET dislikes = dislikes + 1 WHERE id = (%s)")
+            dislikevals = (id,)
+            mysqlcursor.execute(dislikecom, dislikevals)
+            mydb.commit()
+
+            dislikecom = ("UPDATE Posts SET likes = likes - 1 WHERE id = (%s)")
+            dislikevals = (id,)
+            mysqlcursor.execute(dislikecom, dislikevals)
+            mydb.commit()
+    else:
+        com = "INSERT INTO Post_Interactions VALUES (%s, %s, false, true)"
+        vals = (user, id)
+        mysqlcursor.execute(com, vals)
+        mydb.commit()
+
+        dislikecom = (
+            "UPDATE Posts SET dislikes = dislikes + 1 WHERE id = (%s)")
+        dislikevals = (id,)
+        mysqlcursor.execute(dislikecom, dislikevals)
+        mydb.commit()
+
+    return redirect('/homepage')
+
+# navigate to artist verification using GET method
+
+
+@app.get("/artistverify")
+def getArtistVerify():
+    return render_template('artistverify.html')
+
+# verify artist status using POST method
+
+
+@app.post("/artistverify")
+def verifyArtist():
+    user = session['user']
+    mysqlcursor.execute(
+        f"UPDATE Users SET isArtist = true WHERE username = '{user}'")
+    mydb.commit()
+    return redirect('/profile')
+
+# load auctionHouse.html with proper credentials with GET method
+
+
+@app.get("/auctionhouse")
+def getAuctionHouse():
+    user = session['user']
+    mysqlcursor.execute(f"SELECT * FROM Users WHERE username='{user}'")
+    data = mysqlcursor.fetchall()
+
+    # updates status of auctions whenever page is refreshed
+    mysqlcursor.execute(
+        "UPDATE Auctions SET isExpired = true WHERE NOW() > endTime;")
+    auction = getauctions()
+    return render_template("auctionHouse.html", data=data, auction=auction)
+
+# creating an Auction post with the POST method
+
+
+@app.post("/createAuction")
+def createAuctionPost():
+    user = session['user']
+    # generate unique id
+    auctionid = str(uuid.uuid4())
+
+    # pull from post
+    title = request.form.get('title')
+    description = request.form.get('description')
+    endDate = request.form.get('endDate')
+    endTime = request.form.get('endTime')
+    price = request.form.get('price')
+
+    # formatting the date and time for MySQL
+    endDate = endDate.split('/')
+    auctionEnd = f'{endDate[2]}-{endDate[0]}-{endDate[1]} {endTime}:00'
+
+    # pull file from form, get path
+    file = request.files['file']
+
+    # If the user does not select a file, the browser submits an
+    # empty file without a filename.
+    if file.filename == '':
+        print('No selected file')
+        return redirect('index.html')
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    if file:
+        file.save(filepath)
+
+    # add to db
+    mysqlcursor.execute(
+        f"INSERT INTO Auctions (auction_id, title, description, filepath, user, endTime, price, isExpired) VALUES ('{auctionid}', '{title}', '{description}', '{file.filename}', '{user}', '{auctionEnd}', '{price}', 0)")
+    mydb.commit()
+    return redirect('/auctionhouse')
 
 if __name__ == "__main__":
     app.run()
