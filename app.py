@@ -319,12 +319,10 @@ def initconvo(username):
         mysqlcursor.execute(chatquery)
         prevchats = mysqlcursor.fetchall()
 
-        # if there are previous chats, sort by time sent oldest to newest may have to do this might not
-
     except: 
         prevchats = []
 
-    return render_template('message.html', user=oppuser, history = prevchats)
+    return render_template('message.html', user=oppuser, history = prevchats, me = session['user'])
 
 # handle message sent
 @app.post("/msg/<username>")
