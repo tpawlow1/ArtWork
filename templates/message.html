@@ -26,12 +26,28 @@
     </header>
 
 <!-- left side holds artist information-->
+<div>
 
+</div>
 <!-- right side is message list, use jinja python to pull from database-->
-
+<div>
+  {% if history.length == 0 %}
+    <h1>Start a chat with {{user[0] }}</h1>
+  {% else %}
+    {% for message in history %}
+      {% if message[0] != user[0] %}
+        <!-- if the message is coming to the user in session, left align-->
+        <p> {{ message[2] }}</p>
+      {% else %}
+        <!-- if the message is being sent by user in session, right align-->
+        <p> {{ message[2] }}</p>
+      {%endif%}
+    {%endfor%}
+  {%endif%}
+</div>
 <!-- bottom of right will be form for entering messages-->
 
-<form action="/msg/{{user[0]}}" method="POST">
+<form class="fixed-bottom" action="/msg/{{user[0]}}" method="POST">
     <td>
         <div class="d-flex justify-content-end">
             <form>

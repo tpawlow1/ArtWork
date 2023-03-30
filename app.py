@@ -314,10 +314,15 @@ def initconvo(username):
 
     # also query to see if there are previous messages that need to be presented
     try:
-        chatquery = f"SELECT * FROM Messages WHERE tousername='{username}' AND fromusername='{session['user']}'"
-        prevchats = mysqlcursor.execute(chatquery)
+        chatquery = f"SELECT * FROM Messages WHERE (tousername='{username}' AND fromusername='{session['user']}') \
+                                                OR (tousername='{session['user']}' AND fromusername='{username}')"
+        mysqlcursor.execute(chatquery)
+        prevchats = mysqlcursor.fetchall()
+
+        # if there are previous chats, sort by time sent oldest to newest may have to do this might not
+
     except: 
-        prevchats = None
+        prevchats = []
 
     return render_template('message.html', user=oppuser, history = prevchats)
 
