@@ -70,7 +70,23 @@
 
         <td>
           <!-- displays buttons on the same line-->
+          
           <div class="d-flex justify-content-end">
+            <form 
+              action="{{ url_for('initconvo', username=post[i][4]) }}" 
+              method="get">
+              <input 
+                type="hidden" 
+                name="username" 
+                value={{post[i][4]}}>
+              <button 
+                type="submit" 
+                class="btn btn-dark"
+                >
+                Message
+              </button>
+            </form>
+            
             <form 
               action="{{ url_for('follow_user') }}" 
               method="post">

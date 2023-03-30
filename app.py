@@ -3,7 +3,6 @@ from datetime import datetime
 import mysql.connector
 import os
 import uuid
-import datetime
 
 
 app = Flask(__name__)
