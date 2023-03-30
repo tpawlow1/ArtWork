@@ -19,15 +19,16 @@
       <h1>ArtWork</h1>
       <div>
         <div class="justify-content-center">
+          <a href="/homepage" class="btn btn-outline-light me-2">Homepage</a>
           <a href="/createpost" class="btn btn-outline-light me-2">New Post</a>
           <a href="/profile" class="btn btn-warning">{{ me }}</a>
         </div>
       </div>
     </header>
 
-<div d-flex justify-content-between>
+<div class="d-flex justify-content-center">
 <!-- left side holds artist information-->
-  <div style="float:left; width:50%;">
+  <div style="float:left; width:30%;">
     <div class="pb-1">
       <h1>Messaging:</h1>
     </div>
@@ -36,7 +37,7 @@
     <h5 style="margin-left: 30px">{{user[3]}}</h5>
   </div>
   <!-- right side is message list, use jinja python to pull from database-->
-  <div style="float:left; width:50%; margin-left: 500px;">
+  <div style="float:left; width:70%;">
     <div class="pb-3" style="overflow-y:auto; max-height: 600px;">
       {% if history.length == 0 %}
         <h1>Start a chat with {{ user[0] }}</h1>
@@ -50,7 +51,7 @@
             </div>
           {% else %} <!-- https://getbootstrap.com/docs/5.3/utilities/position/ -->
             <!-- if the message is being sent by user in session, right align + blue-->
-            <div class="bg-primary text-white">
+            <div class="bg-primary text-white"> 
               <p><b>{{ me }}</b>              <small> Sent: {{ message[3] }} </small></p>
               <p> {{ message[2] }}</p>
             </div>
