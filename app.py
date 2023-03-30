@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, session, url_for
+from datetime import datetime
 import mysql.connector
 import os
 import uuid
@@ -19,7 +20,7 @@ mydb = mysql.connector.connect(
     database="ArtWork"
 )
 
-mysqlcursor = mydb.cursor()
+mysqlcursor = mydb.cursor(buffered=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
@@ -312,13 +313,46 @@ def unfollow_user():
 
     return redirect(url_for('homepage'))
 
+# render message page
+@app.get("/msg/<username>")
+def initconvo(username):
+    # will need to query database to pull user information
+    chatterquery = f"SELECT * FROM Users WHERE username='{username}'"
+    mysqlcursor.execute(chatterquery)
 
-@app.get("/msg/<uname>")
-def chatuser(uname):
-    return render_template('/msguser', user=uname)
+    oppuser = mysqlcursor.fetchone()
 
-# like post using POST request
+    # also query to see if there are previous messages that need to be presented
+    try:
+        chatquery = f"SELECT * FROM Messages WHERE (tousername='{username}' AND fromusername='{session['user']}') \
+                                                OR (tousername='{session['user']}' AND fromusername='{username}')"
+        mysqlcursor.execute(chatquery)
+        prevchats = mysqlcursor.fetchall()
 
+    except: 
+        prevchats = []
+
+    return render_template('message.html', user=oppuser, history = prevchats, me = session['user'])
+
+# handle message sent
+@app.post("/msg/<username>")
+def chatuser(username): 
+    # take message sent by user and get time sent
+    content = request.form.get('content')
+    touser = username
+    fromuser = session['user'] # pull current user's username 
+    now = datetime.now()
+    datetimestring = now.strftime("%Y/%m/%d %H:%M:%S") # pull time of msg sent in timedate type https://sebhastian.com/mysql-incorrect-datetime-value/
+    
+    # push to database
+    addcom = "INSERT INTO Messages VALUES (%s, %s, %s, %s)"
+    addvals = (touser, fromuser, content, datetimestring)
+    mysqlcursor.execute(addcom, addvals)
+
+    mydb.commit()
+
+    # redirect to the same page
+    return redirect(f'/msg/{touser}')
 
 @app.route('/like/<id>', methods=['POST'])
 def like_post(id):
@@ -470,7 +504,6 @@ def createAuctionPost():
         f"INSERT INTO Auctions (auction_id, title, description, filepath, user, endTime, price, isExpired) VALUES ('{auctionid}', '{title}', '{description}', '{file.filename}', '{user}', '{auctionEnd}', '{price}', 0)")
     mydb.commit()
     return redirect('/auctionhouse')
-
 
 if __name__ == "__main__":
     app.run()

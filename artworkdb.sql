@@ -35,7 +35,6 @@ CREATE TABLE IF NOT EXISTS `Comments`(
 );
 
 CREATE TABLE IF NOT EXISTS`Messages`(
-    `id` varchar(100),
     `tousername` varchar(40), 
     `fromusername` varchar(40), 
     `content` varchar(300), 

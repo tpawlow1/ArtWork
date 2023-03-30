@@ -19,6 +19,7 @@
       <h1>ArtWork</h1>
       <div>
         <div class="justify-content-center">
+          <a href="/createpost" class="btn btn-outline-light me-2">New Post</a>
           <a href="/auctionhouse" class="btn btn-dark">Auction House</a>
           <a href="/profile" class="btn btn-warning">{{user}}</a>
         </div>
@@ -70,6 +71,20 @@
         <td>
           <!-- displays buttons on the same line-->
           <div class="d-flex justify-content-end">
+            <form 
+              action="{{ url_for('follow_user') }}" 
+              method="post">
+              <input 
+                type="hidden" 
+                name="username" 
+                value={{post[i][4]}}>
+              <button 
+                type="submit" 
+                class="btn btn-dark"
+                >
+                Follow
+              </button>
+            </form>
             <!-- only show to users other than poster -->
             {% if user != post[i][4] %}
               <form action="{{ url_for('follow_user') }}" method="post">
