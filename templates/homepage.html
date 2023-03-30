@@ -87,30 +87,37 @@
               </button>
             </form>
             
-            <form 
-              action="{{ url_for('follow_user') }}" 
-              method="post">
-              <input 
-                type="hidden" 
-                name="username" 
-                value={{post[i][4]}}>
-              <button 
-                type="submit" 
-                class="btn btn-dark"
-                >
-                Follow
-              </button>
-            </form>
-            <!-- only show to users other than poster -->
-            {% if user != post[i][4] %}
-              <form action="{{ url_for('follow_user') }}" method="post">
-                <input type="hidden" name="username" value="{{post[i][4]}}" />
-                <button type="submit" class="btn btn-dark">Follow</button>
-              </form>
 
-              <form action="{{ url_for('unfollow_user') }}" method="post">
-                <input type="hidden" name="username" value="{{post[i][4]}}" />
-                <button type="submit" class="btn btn-dark">Unfollow</button>
+            <!-- only show to users other than poster -->
+            {% if user.lower() != post[i][4].lower() %}
+              <form 
+                action="{{ url_for('follow_user') }}" 
+                method="post">
+                <input 
+                  type="hidden" 
+                  name="username" 
+                  value={{post[i][4]}}>
+                <button 
+                  type="submit" 
+                  class="btn btn-dark"
+                  >
+                  Follow
+                </button>
+              </form>
+              
+              <form 
+                action="{{ url_for('unfollow_user') }}" 
+                method="post">
+                <input 
+                  type="hidden" 
+                  name="username" 
+                  value="{{post[i][4]}}" />
+                <button 
+                  type="submit" 
+                  class="btn btn-dark"
+                  >
+                  Unfollow
+                </button>
               </form>
             {% endif %}
 
@@ -125,7 +132,7 @@
             </form>
 
             <!-- only display to owner of post -->
-            {% if user == post[i][4] %}
+            {% if user.lower() == post[i][4].lower() %}
               <form>
                 <button
                   type="submit"
