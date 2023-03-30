@@ -25,48 +25,54 @@
       </div>
     </header>
 
+<div d-flex justify-content-between>
 <!-- left side holds artist information-->
-<div>
-
-</div>
-<!-- right side is message list, use jinja python to pull from database-->
-<div>
-  <div>
-    {% if history.length == 0 %}
-      <h1>Start a chat with {{ user[0] }}</h1>
-    {% else %}
-      {% for message in history %}
-        {% if message[0] != user[0] %}
-          <!-- if the message is coming to the user in session, left align + green-->
-          <div class="start-20 bg-secondary text-white">
-            <p><b>{{user[0]}} </b></p>
-            <p> {{ message[2] }}</p>
-            <p><small> Sent: {{ message[3] }} </small></p>
-          </div>
-        {% else %} <!-- https://getbootstrap.com/docs/5.3/utilities/position/ -->
-          <!-- if the message is being sent by user in session, right align + blue-->
-          <div class="end-20 bg-primary text-white">
-            <p><b>{{ me }}</b></p>
-            <p> {{ message[2] }}</p>
-            <p><small> Sent: {{ message[3] }} </small></p>
-          </div>
-        {%endif%}
-      {%endfor%}
-    {%endif%}
+  <div style="float:left; width:50%;">
+    <div class="pb-1">
+      <h1>Messaging:</h1>
+    </div>
+    <img src="../static/images/{{ user[4] }}" width="300px" height="auto" style="clip-path: circle()">
+    <h2 style="margin-left: 30px;">{{user[0]}}</h2>
+    <h5 style="margin-left: 30px">{{user[3]}}</h5>
   </div>
-  <!-- bottom of right will be form for entering messages-->
+  <!-- right side is message list, use jinja python to pull from database-->
+  <div style="float:left; width:50%; margin-left: 500px;">
+    <div class="pb-3" style="overflow-y:auto; max-height: 600px;">
+      {% if history.length == 0 %}
+        <h1>Start a chat with {{ user[0] }}</h1>
+      {% else %}
+        {% for message in history %}
+          {% if message[0] != user[0] %}
+            <!-- if the message is coming to the user in session, left align + green-->
+            <div class="bg-secondary text-white">
+              <p><b>{{ user[0] }}</b>              <small> Sent: {{ message[3] }} </small></p>
+              <p> {{ message[2] }}</p>
+            </div>
+          {% else %} <!-- https://getbootstrap.com/docs/5.3/utilities/position/ -->
+            <!-- if the message is being sent by user in session, right align + blue-->
+            <div class="bg-primary text-white">
+              <p><b>{{ me }}</b>              <small> Sent: {{ message[3] }} </small></p>
+              <p> {{ message[2] }}</p>
+            </div>
+          {%endif%}
+        {%endfor%}
+      {%endif%}
+    </div>
+    <!-- bottom of right will be form for entering messages-->
 
-  <form class="fixed-bottom" action="/msg/{{user[0]}}" method="POST">
-      <td>
-          <div class="d-flex justify-content-end">
-              <form>
-                  <input type="" class="form-control" name="content" placeholder="" required>
-                  <button>Send</button>
-              </form>
-          </div>
-      </td>
-  </form>
+    <form class="fixed-bottom" action="/msg/{{user[0]}}" method="POST">
+        <td>
+            <div class="d-flex justify-content-end">
+                <form>
+                    <input type="" class="form-control" name="content" placeholder="" required>
+                    <button>Send</button>
+                </form>
+            </div>
+        </td>
+    </form>
+  </div>
 </div>
+
 <footer></footer>
 
 </body>
