@@ -11,38 +11,22 @@
       integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
       crossorigin="anonymous"
     />
-    <title>Login</title>
+    <title>{% block title %}{% endblock %}</title>
   </head>
   <body>
     <!-- navbar for website-->
     <header class="p-5 text-bg-dark d-flex justify-content-between">
-      <h1>ArtWork</h1>
+      <h1><a href="/homepage" class="text-decoration-none text-white">ArtWork</a></h1>
       <div>
         <div class="justify-content-center">
-          <!-- Login/Signup locations for now -->
-          <!-- create post button here too but should verify if user is logged in, for future -->
-          
-          <a href="/signup" class="btn btn-outline-light me-2">Sign Up</a>
+          <a href="/auctionhouse" class="btn btn-outline-light me-2">Auction House</a>
+          <a href="/createpost" class="btn btn-outline-light me-2">New Post</a>
+          <a href="/#" class="btn btn-outline-light me-2">Following</a> <!-- paul add link when following feature is completed -->
+          <a href="/profile" class="btn btn-warning">{% block username %}{% endblock %}</a>
         </div>
       </div>
     </header>
-<div>
-  <h1>Login to ArtWork!</h1>
-  <div>
-    <form method="post">
-      <label>Username:</label>
-      <input type="text" name="username" />
-      <br />
-      <label>Password:</label>
-      <input type="password" name="password" />
-      <br />
-      <div style="color: red">{{message}}</div>
-      <input type="submit" value="Login" />
-    </form>
-  </div>
-</div>
-<footer></footer>
-</body>
+    {% block body %}{% endblock %}
+    <footer></footer>
+  </body>
 </html>
-
-
