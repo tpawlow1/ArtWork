@@ -1,7 +1,7 @@
 {% extends '_layout_home.html' %} 
 
 {% block title %}{{post[1]}}{% endblock %}
-{% block username %}{{post[4]}}{% endblock %}
+{% block username %}{{user}}{% endblock %}
 
 {% block body %} 
 
@@ -18,7 +18,7 @@
             
             {%if post|length != 0%}
             {%for i in range(comments|length)%}
-            <div style = "border-bottom: solid; margin: 30px;">
+            <div style = "border-bottom: solid; margin: 30px; ">
             <h6> {{comments[i][2]}} said:</h6>
             <p> {{comments[i][1]}}</p>
             </div>

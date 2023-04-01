@@ -171,7 +171,8 @@ def editProfilePic():
 # get create post form
 @app.get("/createpost")
 def get_createPost():
-    return render_template('createPost.html')
+    user = session['user']
+    return render_template('createPost.html', user=user)
 
 # upload post information and create post
 
@@ -240,6 +241,7 @@ def updatePost(id):
 
 @app.route('/comments/<id>', methods=['GET', 'POST'])
 def getPostComments(id):
+    user = session['user']
 
     # grabbing post info
     mysqlcursor.execute("SELECT * FROM Posts WHERE id = '" + str(id) + "'")
@@ -261,7 +263,7 @@ def getPostComments(id):
         "SELECT * FROM Comments WHERE post_id = '" + str(id) + "'")
     comments = mysqlcursor.fetchall()
 
-    return render_template('postComments.html', post=data, comments=comments)
+    return render_template('postComments.html', post=data, comments=comments, user=user)
 
 
 # delete post using POST request
