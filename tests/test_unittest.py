@@ -42,13 +42,18 @@ def test_signup():
     assert "This is the Landing Page" in response.data.decode('utf-8')
 
 
-    '''# test3 = improper email
+    # test3 = user already exists
     response = app.test_client().post("/signup", data={
-                "usermail": username, 
+                "usermail": usermail, 
                 "name": username, 
                 "pass1": "Passw0rd!", 
                 "pass2": "Passw0rd!",
-                }, follow_redirects=True)'''
+                }, follow_redirects=True)
+    
+    # make sure response is good, and that user is redirected to login page after entering an account that already exists
+    assert response.status_code == 200
+    assert "Login to ArtWork!" in response.data.decode('utf-8')
+
     
     mysqlcursor = mydb.cursor(buffered=True)
     query = f"DELETE FROM Users WHERE `username`='{username}'"
@@ -71,17 +76,30 @@ def test_editpost():
 
 
     # test1 = good
-    response = app.test_client().post('/edit/1', data={
+    response = app.test_client().post(f'/edit/{postid}', data={
                 "title": "test_title", 
                 "description": "test_description",
             })
     
-    
+    # not really a logged in user, so we need to check with database that the post was updated. 
     assert response.status_code == 302
-    
 
     mysqlcursor = mydb.cursor(buffered=True)
+    mysqlcursor.execute(f"SELECT * FROM Posts WHERE `id`='{postid}'")
+    results = mysqlcursor.fetchall()
+
+    assert "test_title", "test_description" in results
+
+    # test 2 where no input is given
+    response = app.test_client().post(f'/edit/{postid}', data={
+                "title": "", 
+                "description": "",
+            })
     
+    # should still redirect
+    assert response.status_code == 302
+
+    mysqlcursor = mydb.cursor(buffered=True)
     query = f"DELETE FROM Posts WHERE `id`='{postid}'"
     mysqlcursor.execute(query)
     mydb.commit()
