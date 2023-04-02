@@ -16,6 +16,7 @@ def test_signup():
                 "pass2": "Passw0rd!",
                 }, follow_redirects=True)
     
+    # make sure that the response is good, and that the user lands on homepage, where it greets them by username
     assert response.status_code == 200
     assert username in response.data.decode('utf-8')
 
@@ -28,7 +29,6 @@ def test_signup():
 
     mysqlcursor.close()
 
-    
     # test2 = mismatch passwords
     response = app.test_client().post("/signup", data={
                 "usermail": usermail, 
@@ -36,6 +36,11 @@ def test_signup():
                 "pass1": "Passw0rd!", 
                 "pass2": "Different!",
                 }, follow_redirects=True)
+    
+    # make sure good response, and that the user goes back to the landing page (for now)
+    assert response.status_code == 200
+    assert "This is the Landing Page" in response.data.decode('utf-8')
+
 
     '''# test3 = improper email
     response = app.test_client().post("/signup", data={

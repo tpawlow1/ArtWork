@@ -99,10 +99,13 @@ def Signup():
         # placeholder bounce back if no match
         return render_template('index.html')
     # if all good, send to user table in database
-    addcom = 'INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s)'
-    addvals = (username, email, userpass1, bio, propicpath, '0')
-    mysqlcursor.execute(addcom, addvals)
-    mydb.commit()
+    try: 
+        addcom = 'INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s)'
+        addvals = (username, email, userpass1, bio, propicpath, '0')
+        mysqlcursor.execute(addcom, addvals)
+        mydb.commit()
+    except mysql.connector.errors.IntegrityError: 
+        return redirect(url_for("login"))
     # sets user's username to user for the session
     session['user'] = username
 
