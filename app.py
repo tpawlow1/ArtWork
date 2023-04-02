@@ -118,6 +118,21 @@ def homepage():
     data = getposts()
     return render_template("homepage.html", post=data, user=user)
 
+@app.get('/recommendedpage')
+def recommendedpage():
+    username = session['user']
+    data = get_following_posts(username)
+    return render_template("recommendedpage.html", post=data, user=username)
+
+def get_following_posts(username):
+    # gets all the posts of the users that the currently user follows
+    mysqlcursor.execute("SELECT * FROM Posts WHERE user IN \
+                     (SELECT following FROM Follows WHERE follower=%s \
+                     UNION SELECT following FROM Follows WHERE follower in (SELECT following FROM Follows WHERE follower=%s))",
+                     (username, username))
+    posts = mysqlcursor.fetchall()
+
+    return posts
 
 @app.get("/profile")
 def profilePage():
@@ -277,8 +292,6 @@ def deletePost(id):
     return redirect('/homepage')
 
 # follow user
-
-
 @app.post('/follow')
 def follow_user():
     following = request.form.get('username')
@@ -300,8 +313,6 @@ def follow_user():
     return redirect(url_for('homepage'))
 
 # unfollow user
-
-
 @app.post('/unfollow')
 def unfollow_user():
     unfollowing = request.form.get('username')
@@ -394,8 +405,6 @@ def like_post(id):
     return redirect('/homepage')
 
 # dislike post using POST request
-
-
 @app.route('/dislike/<id>', methods=['POST'])
 def dislike_post(id):
     user = session['user']
@@ -436,15 +445,11 @@ def dislike_post(id):
     return redirect('/homepage')
 
 # navigate to artist verification using GET method
-
-
 @app.get("/artistverify")
 def getArtistVerify():
     return render_template('artistverify.html')
 
 # verify artist status using POST method
-
-
 @app.post("/artistverify")
 def verifyArtist():
     user = session['user']
@@ -454,8 +459,6 @@ def verifyArtist():
     return redirect('/profile')
 
 # load auctionHouse.html with proper credentials with GET method
-
-
 @app.get("/auctionhouse")
 def getAuctionHouse():
     user = session['user']
@@ -469,8 +472,6 @@ def getAuctionHouse():
     return render_template("auctionHouse.html", data=data, auction=auction)
 
 # creating an Auction post with the POST method
-
-
 @app.post("/createAuction")
 def createAuctionPost():
     user = session['user']
