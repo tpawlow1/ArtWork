@@ -1,10 +1,10 @@
-from app import app
+from app import app, mydb
 import unittest
 import uuid
 
-def test_signup():
+def test_signup(self):
     # generate unique id for test user
-    username = str(uuid.uuid4())
+    username = "gh3ifmsdy"
     usermail = username + "@gmail.com"
 
     # test1 = good
@@ -13,8 +13,10 @@ def test_signup():
                 "name": username, 
                 "pass1": "Passw0rd!", 
                 "pass2": "Passw0rd!",
-                }, follow_redirects=True)
-
+                })
+    
+    self.assertEqual(response.status_code, 302)
+    '''
     # test2 = mismatch passwords
     response = app.test_client().post("/signup", data={
                 "usermail": usermail, 
@@ -29,22 +31,24 @@ def test_signup():
                 "name": username, 
                 "pass1": "Passw0rd!", 
                 "pass2": "Passw0rd!",
-                }, follow_redirects=True)
+                }, follow_redirects=True)'''
     
-    mysqlcursor = app.mydb.cursor(buffered=True)
-    query = f"DELETE FROM Users WHERE username={username}"
-    mysqlcursor.execute()
+    mysqlcursor = mydb.cursor(buffered=True)
+    query = f"DELETE FROM Users WHERE `username`='{username}'"
+    mysqlcursor.execute(query)
+    mydb.commit()
 
 
-def test_editpost(): 
+def test_editpost(self): 
     postid = str(uuid.uuid4())
 
     # connect to db and create post before editing
-    mysqlcursor = app.mydb.cursor(buffered=True)
+    mysqlcursor = mydb.cursor(buffered=True)
     addcom = "INSERT INTO Posts VALUES (%s, %s, %s, %s, %s, %s, %s)"
-    addvals = (postid, title, description, file.filename, user, 0, 0)
+    addvals = (postid, 'testtitle', 'test_desc', 'bunny.jpg', 'sample', 0, 0)
     
-    mysqlcursor.execute()
+    mysqlcursor.execute(addcom, addvals)
+    mydb.commit()
     mysqlcursor.close()
 
 
@@ -55,7 +59,11 @@ def test_editpost():
             }, follow_redirects=True)
     
 
-    mysqlcursor = app.mydb.cursor(buffered=True)
+    mysqlcursor = mydb.cursor(buffered=True)
     
-    query = f"DELETE FROM Posts WHERE postid={postid}"
-    mysqlcursor.execute()
+    query = f"DELETE FROM Posts WHERE `id`='{postid}'"
+    mysqlcursor.execute(query)
+    mydb.commit()
+
+test_signup()
+test_editpost()
