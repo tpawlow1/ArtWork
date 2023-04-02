@@ -65,7 +65,6 @@
       <div>
         <div class="justify-content-center">
           <a href="/createpost" class="btn btn-outline-light me-2">New Post</a>
-          <a href="/homepage" class="btn btn-outline-light me-2">Homepage</a>
           {%if data[0][5] == 1%}
           <button
             class="btn btn-outline-light me-2"
@@ -74,6 +73,7 @@
             New Auction
           </button>
           {%endif%} 
+          <a href="/homepage" class="btn btn-outline-light me-2">Homepage</a>
           <a href="/profile" class="btn btn-warning">{% block username %} {{ session['user'] }} {% endblock %}</a>
         </div>
       </div>
