@@ -1,6 +1,4 @@
 from app import app, mydb
-import uuid
-
 
 
 def test_signup():
