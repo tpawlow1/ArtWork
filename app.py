@@ -152,20 +152,27 @@ def profilePage():
 def editProfile():
     user = session['user']
     username = request.form.get('username')
-    print(username)
     email = request.form.get('email')
     password = request.form.get('password')
     bio = request.form.get('bio')
 
-    command = f"UPDATE Users SET username='{username}', email='{email}', password='{password}', bio='{bio}' WHERE username = '{user}';"
-    mysqlcursor.execute(command)
-    mydb.commit()
-    command2 = f"UPDATE Posts SET user='{username}' WHERE user='{user}'"
-    mysqlcursor.execute(command2)
-    mydb.commit()
-    session.pop('user', None)
-    session['user'] = username
-    return redirect("/profile")
+    mysqlcursor.execute(f"SELECT * FROM Users WHERE username = '{username}' ")
+    data = mysqlcursor.fetchone()
+
+    if(username == ''):
+        return redirect("/profile")
+    elif(data != None):
+        return redirect("/profile")
+    else:
+        command2 = f"UPDATE Posts SET user='{username}' WHERE user='{user}'"
+        mysqlcursor.execute(command2)
+        mydb.commit()
+        command = f"UPDATE Users SET username='{username}', email='{email}', password='{password}', bio='{bio}' WHERE username = '{user}';"
+        mysqlcursor.execute(command)
+        mydb.commit()
+        session.pop('user', None)
+        session['user'] = username
+        return redirect("/profile")
 
 
 # edits profile pic in database
