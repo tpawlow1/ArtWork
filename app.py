@@ -99,12 +99,12 @@ def Signup():
         # placeholder bounce back if no match
         return render_template('index.html')
     # if all good, send to user table in database
-    try: 
+    try:
         addcom = 'INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s)'
         addvals = (username, email, userpass1, bio, propicpath, '0')
         mysqlcursor.execute(addcom, addvals)
         mydb.commit()
-    except mysql.connector.errors.IntegrityError: 
+    except mysql.connector.errors.IntegrityError:
         return redirect(url_for("login"))
     # sets user's username to user for the session
     session['user'] = username
@@ -121,21 +121,24 @@ def homepage():
     data = getposts()
     return render_template("homepage.html", post=data, user=user)
 
+
 @app.get('/recommendedpage')
 def recommendedpage():
     username = session['user']
     data = get_following_posts(username)
     return render_template("recommendedpage.html", post=data, user=username)
 
+
 def get_following_posts(username):
     # gets all the posts of the users that the currently user follows
     mysqlcursor.execute("SELECT * FROM Posts WHERE user IN \
                      (SELECT following FROM Follows WHERE follower=%s \
                      UNION SELECT following FROM Follows WHERE follower in (SELECT following FROM Follows WHERE follower=%s))",
-                     (username, username))
+                        (username, username))
     posts = mysqlcursor.fetchall()
 
     return posts
+
 
 @app.get("/profile")
 def profilePage():
@@ -287,6 +290,11 @@ def getPostComments(id):
 # delete post using POST request
 @app.route('/delete/<id>', methods=['POST'])
 def deletePost(id):
+    deletecom = ("DELETE FROM Post_Interactions WHERE pi_postID = (%s)")
+    deletevals = (id,)
+    mysqlcursor.execute(deletecom, deletevals)
+    mydb.commit()
+
     deletecom = ("DELETE FROM Posts WHERE id = (%s)")
     deletevals = (id,)
     mysqlcursor.execute(deletecom, deletevals)
@@ -295,6 +303,8 @@ def deletePost(id):
     return redirect('/homepage')
 
 # follow user
+
+
 @app.post('/follow')
 def follow_user():
     following = request.form.get('username')
@@ -316,6 +326,8 @@ def follow_user():
     return redirect(url_for('homepage'))
 
 # unfollow user
+
+
 @app.post('/unfollow')
 def unfollow_user():
     unfollowing = request.form.get('username')
@@ -329,6 +341,8 @@ def unfollow_user():
     return redirect(url_for('homepage'))
 
 # render message page
+
+
 @app.get("/msg/<username>")
 def initconvo(username):
     # will need to query database to pull user information
@@ -344,21 +358,24 @@ def initconvo(username):
         mysqlcursor.execute(chatquery)
         prevchats = mysqlcursor.fetchall()
 
-    except: 
+    except:
         prevchats = []
 
-    return render_template('message.html', user=oppuser, history = prevchats, me = session['user'])
+    return render_template('message.html', user=oppuser, history=prevchats, me=session['user'])
 
 # handle message sent
+
+
 @app.post("/msg/<username>")
-def chatuser(username): 
+def chatuser(username):
     # take message sent by user and get time sent
     content = request.form.get('content')
     touser = username
-    fromuser = session['user'] # pull current user's username 
+    fromuser = session['user']  # pull current user's username
     now = datetime.now()
-    datetimestring = now.strftime("%Y/%m/%d %H:%M:%S") # pull time of msg sent in timedate type https://sebhastian.com/mysql-incorrect-datetime-value/
-    
+    # pull time of msg sent in timedate type https://sebhastian.com/mysql-incorrect-datetime-value/
+    datetimestring = now.strftime("%Y/%m/%d %H:%M:%S")
+
     # push to database
     addcom = "INSERT INTO Messages VALUES (%s, %s, %s, %s)"
     addvals = (touser, fromuser, content, datetimestring)
@@ -368,6 +385,7 @@ def chatuser(username):
 
     # redirect to the same page
     return redirect(f'/msg/{touser}')
+
 
 @app.route('/like/<id>', methods=['POST'])
 def like_post(id):
@@ -408,6 +426,8 @@ def like_post(id):
     return redirect('/homepage')
 
 # dislike post using POST request
+
+
 @app.route('/dislike/<id>', methods=['POST'])
 def dislike_post(id):
     user = session['user']
@@ -448,11 +468,15 @@ def dislike_post(id):
     return redirect('/homepage')
 
 # navigate to artist verification using GET method
+
+
 @app.get("/artistverify")
 def getArtistVerify():
     return render_template('artistverify.html')
 
 # verify artist status using POST method
+
+
 @app.post("/artistverify")
 def verifyArtist():
     user = session['user']
@@ -462,6 +486,8 @@ def verifyArtist():
     return redirect('/profile')
 
 # load auctionHouse.html with proper credentials with GET method
+
+
 @app.get("/auctionhouse")
 def getAuctionHouse():
     user = session['user']
@@ -475,6 +501,8 @@ def getAuctionHouse():
     return render_template("auctionHouse.html", data=data, auction=auction)
 
 # creating an Auction post with the POST method
+
+
 @app.post("/createAuction")
 def createAuctionPost():
     user = session['user']
@@ -509,6 +537,7 @@ def createAuctionPost():
         f"INSERT INTO Auctions (auction_id, title, description, filepath, user, endTime, price, isExpired) VALUES ('{auctionid}', '{title}', '{description}', '{file.filename}', '{user}', '{auctionEnd}', '{price}', 0)")
     mydb.commit()
     return redirect('/auctionhouse')
+
 
 if __name__ == "__main__":
     app.run()
