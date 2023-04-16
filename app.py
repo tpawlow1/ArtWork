@@ -546,5 +546,25 @@ def createAuctionPost():
     return redirect('/auctionhouse')
 
 
+
+
+# get add funds page
+@app.get("/add")
+def getAaddFunds():
+    # we want to pull user info + current amount for display
+
+    return render_template('addfunds.html')
+
+# post after user added money
+@app.post("/add")
+def AddFunds():
+    # get amount
+    request.form.get('amount')
+    # add to user's db account
+
+    # redirect to profile
+    return redirect('/profile')
+
+
 if __name__ == "__main__":
     app.run()
