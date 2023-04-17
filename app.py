@@ -550,18 +550,24 @@ def createAuctionPost():
 
 # get add funds page
 @app.get("/add")
-def getAaddFunds():
+def getAddFunds():
     # we want to pull user info + current amount for display
-
-    return render_template('addfunds.html')
+    user = session['user']
+    mysqlcursor.execute(f"SELECT * FROM Users WHERE username='{user}'")
+    data = mysqlcursor.fetchall()
+    return render_template('addfunds.html', user=data)
 
 # post after user added money
 @app.post("/add")
 def AddFunds():
+    user = session['user']
     # get amount
-    request.form.get('amount')
+    amount = request.form.get('amount')
     # add to user's db account
-
+    addcom = "UPDATE Users SET Money = Money + (%s) WHERE username = (%s)"
+    addvals = (amount, user)
+    mysqlcursor.execute(addcom, addvals)
+    mydb.commit()
     # redirect to profile
     return redirect('/profile')
 

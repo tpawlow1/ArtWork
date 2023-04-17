@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS `Users` (
     `password` varchar(40),
     `bio` varchar(255),
     `profilePicPath` varchar(2048),
-    `isArtist` BOOLEAN DEFAULT false 
+    `isArtist` BOOLEAN DEFAULT false, 
+    `Money` DECIMAL(6,2)
 );
 
 CREATE TABLE IF NOT EXISTS`Follows`(
