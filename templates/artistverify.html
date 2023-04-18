@@ -1,4 +1,6 @@
-{% extends './_layouts/_layout_home.html' %} {% block title %}Artist Verification{% endblock %}
+{% extends './_layouts/_layout_home.html' %} 
+{% block title %}Artist Verification{% endblock %} 
+{% block username %}{{ session['user'] }}{% endblock %}
 {% block body %}
 <div>
   <h1>Verify To Become An Artist!</h1>
