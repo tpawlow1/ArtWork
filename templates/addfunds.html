@@ -1,0 +1,21 @@
+{% extends './_layouts/_layout_profile.html' %} {% block title %}Add Funds!{% endblock %}
+{% block body %}
+<div>
+    <div style="margin-top: 25px"> <!-- user information, keeps consistent with profile. -->
+        <img src="../static/images/{{data[0][4]}}" width="300px" height="auto" style="clip-path: circle()">
+        <h2 style="margin-left: 30px;">{{data[0][0]}}</h2>
+        <h4 style="margin-left: 30px">{{data[0][3]}}</h4>
+    </div>
+    <div> <!-- section for form for adding funds-->
+        <h2>Please enter the amount of funds you would like to add to your account</h2>
+        <form action="/add" method="POST">
+            <div class="form-group">
+                <label for="amount">Amount</label>
+                <input type="number" min="1" step="any" max="100000" class="form-control" name="amount" placeholder="0.00" required>
+            </div>
+            <button type="submit" class="btn btn-warning">Submit</button>
+        </form>
+    </div> 
+
+</div>
+{% endblock %}
