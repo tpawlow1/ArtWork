@@ -100,8 +100,8 @@ def Signup():
         return render_template('index.html')
     # if all good, send to user table in database
     try:
-        addcom = 'INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s)'
-        addvals = (username, email, userpass1, bio, propicpath, '0')
+        addcom = 'INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s, %s)'
+        addvals = (username, email, userpass1, bio, propicpath, '0', '0.00')
         mysqlcursor.execute(addcom, addvals)
         mydb.commit()
     except mysql.connector.errors.IntegrityError:
@@ -555,7 +555,7 @@ def getAddFunds():
     user = session['user']
     mysqlcursor.execute(f"SELECT * FROM Users WHERE username='{user}'")
     data = mysqlcursor.fetchall()
-    return render_template('addfunds.html', user=data)
+    return render_template('addfunds.html', data=data)
 
 # post after user added money
 @app.post("/add")
