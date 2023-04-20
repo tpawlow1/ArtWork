@@ -75,5 +75,20 @@
       </div>
     </header>
     {% block body %}{% endblock %}
+  </body>
     <footer></footer>
+    <script>
+      function openForm(){
+        document.getElementById("editProfileOverlay").style.display = "block";
+      }
+      function closeForm(){
+        document.getElementById("editProfileOverlay").style.display = "none";
+      }
+      function openPicForm(){
+        document.getElementById("editProfilePicOverlay").style.display = "block";
+      }
+      function closePicForm(){
+        document.getElementById("editProfilePicOverlay").style.display = "none";
+      }
+    </script>
 </html>
