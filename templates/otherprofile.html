@@ -6,10 +6,108 @@
         <img src="../static/images/{{user[0][4]}}" width="300px" height="auto" style="clip-path: circle()">
         <h2 style="margin-left: 30px;">{{user[0][0]}}</h2>
         <h4 style="margin-left: 30px">{{user[0][3]}}</h4>
+        <div> <!-- options for messaging and following user-->
+            <td>
+                <!-- displays buttons on the same line-->
+                  <!-- message with poster-->
+                  <form action="{{ url_for('initconvo', username=user[0][0]) }}" method="get">
+                    <input type="hidden" name="username" value={{user[0][0]}}>
+                    <button type="submit" class="btn btn-dark">
+                      Message
+                    </button>
+                  </form>
+                    <form 
+                      action="{{ url_for('follow_user') }}" 
+                      method="post">
+                      <input 
+                        type="hidden" 
+                        name="username" 
+                        value={{user[0][0]}}>
+                      <button 
+                        type="submit" 
+                        class="btn btn-dark"
+                        >
+                        Follow
+                      </button>
+                    </form>
+                    
+                    <form 
+                      action="{{ url_for('unfollow_user') }}" 
+                      method="post">
+                      <input 
+                        type="hidden" 
+                        name="username" 
+                        value="{{user[0][0]}}" />
+                      <button 
+                        type="submit" 
+                        class="btn btn-dark"
+                        >
+                        Unfollow
+                      </button>
+                    </form>
+                </div>
+              </td>
+        </div>
     </div>
     <div style="float:left; width:70%;">
         <h1>{{user[0][0]}}'s Art!</h1>
-        
+        {%if posts|length == 0%}
+        <h2>No postss!</h2>
+        {%else%} {%for i in range(posts|length)%}
+        <tr>
+            <div class="card" style="width: 30%">
+              <!-- card div for the postss-->
+      
+              <img src="../static/images/{{posts[i][3]}}" width="100%" />
+      
+              <td>
+                <p align="left" style="font-size: 24px">
+                  <b> {{posts[i][1]}} </b>
+                </p>
+              </td>
+              {{posts[i][2]}}
+              <br />
+      
+              <!-- displays username of the postser -->
+              <p>posted by {{posts[i][4]}}</p>
+      
+              <div class="d-flex justify-content-end">
+                <form method="posts">
+                  <button
+                    type="submit"
+                    class="btn-warning"
+                    formaction="/dislike/{{posts[i][0]}}"
+                  >
+                    Dislike
+                  </button>
+                </form>
+      
+                <form method="posts">
+                  <button
+                    type="submit"
+                    class="btn-warning"
+                    formaction="/like/{{posts[i][0]}}"
+                  >
+                    Like
+                  </button>
+                </form>
+              </div>
+      
+              <td>
+                  <form>
+                    <button
+                      type="submit"
+                      class="btn btn-warning"
+                      formaction="/comments/{{posts[i][0]}}"
+                    >
+                      Comments
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </div>
+          </tr>
+        {%endfor%} {%endif%}
     </div>
 </div>
 {% endblock %}
