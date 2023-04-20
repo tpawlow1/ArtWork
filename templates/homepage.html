@@ -50,18 +50,18 @@
         <td>
           <!-- displays buttons on the same line-->
           
-          <div class="d-flex justify-content-end"> <!-- message with poster-->
-            <form 
-              action="{{ url_for('initconvo', username=post[i][4]) }}" 
-              method="get">
-              <input 
-                type="hidden" 
-                name="username" 
-                value={{post[i][4]}}>
-              <button 
-                type="submit" 
-                class="btn btn-dark"
-                >
+          <div class="d-flex justify-content-end"> <!-- Visit their profile-->
+            <form action="{{ url_for('visitUser', username=post[i][4]) }}" method="get">
+              <input type="hidden" name="username" value={{post[i][4]}}>
+              <button type="submit" class="btn btn-dark">
+                Visit {{post[i][4]}}
+              </button>
+            </form>
+            
+            <!-- message with poster-->
+            <form action="{{ url_for('initconvo', username=post[i][4]) }}" method="get">
+              <input type="hidden" name="username" value={{post[i][4]}}>
+              <button type="submit" class="btn btn-dark">
                 Message
               </button>
             </form>
@@ -122,10 +122,7 @@
                 </button>
               </form>
 
-              <form
-                action="{{ url_for('deletePost', id=post[i][0]) }}"
-                method="POST"
-              >
+              <form action="{{ url_for('deletePost', id=post[i][0]) }}" method="POST">
                 <input type="hidden" name="_method" value="DELETE" />
                 <button type="submit" class="btn btn-danger">Delete</button>
               </form>

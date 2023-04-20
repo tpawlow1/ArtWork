@@ -67,9 +67,8 @@
       <h1><a href="/homepage" class="text-decoration-none text-white">ArtWork</a></h1>
       
       <div class="justify-content-center">
-        {%if data[0][5] == 0%} <!-- create block for only profile page to take this-->
-        <a href="/artistverify" class="btn btn-primary">Verify Artist</a>
-        {%endif%}
+        {% block verify %}
+        {% endblock %}
         <a href="/createpost" class="btn btn-outline-light me-2">New Post</a>
         <a href="/homepage" class="btn btn-outline-light me-2">Homepage</a>
         <a href="/logout" class="btn btn-danger" >Logout</a>

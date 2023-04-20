@@ -1,0 +1,17 @@
+{% extends './_layouts/_layout_profile.html' %} 
+{% block title %}{{user[0][0]}}'s Profile{% endblock %}
+{% block body %}
+<div>
+    <div style="margin-top: 25px; float:left; width:30%;">
+        <img src="../static/images/{{user[0][4]}}" width="300px" height="auto" style="clip-path: circle()">
+        <h2 style="margin-left: 30px;">{{user[0][0]}}</h2>
+        <h4 style="margin-left: 30px">{{user[0][3]}}</h4>
+    </div>
+    <div style="float:left; width:70%;">
+        <h1>{{user[0][0]}}'s Art!</h1>
+        
+    </div>
+    
+
+</div>
+{% endblock %}
