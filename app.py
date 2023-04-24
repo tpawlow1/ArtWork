@@ -384,8 +384,8 @@ def chatuser(username):
     datetimestring = now.strftime("%Y/%m/%d %H:%M:%S")
 
     # push to database
-    addcom = "INSERT INTO Messages VALUES (%s, %s, %s, %s)"
-    addvals = (touser, fromuser, content, datetimestring)
+    addcom = "INSERT INTO Messages VALUES (%s, %s, %s, %s, %s)"
+    addvals = (touser, fromuser, content, datetimestring, '0')
     mysqlcursor.execute(addcom, addvals)
 
     mydb.commit()
