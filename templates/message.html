@@ -17,9 +17,9 @@
 
     <!--if the user you're message is an artist then commission button will appear-->
     {% if user[5] %}
-    <form>
+    <form action="/msgcom/{{user[0]}}" method="POST">
       <label for="amount">Amount:</label>
-      <input type="number" id="amount" placeholder="$1000.00" required>
+      <input type="number" name="amount"id="amount" placeholder="$1000.00" step=".01" required>
       <button>Send Commission</button>
     </form>
     {%endif%}
@@ -33,16 +33,30 @@
         {% for message in history %}
           {% if message[0] != user[0] %}
             <!-- if the message is coming to the user in session, left align + green-->
+            {%if message[4]%} 
+            <div class="bg-secondary text-white">
+              <p><b>{{ user[0] }}</b>              <small> Sent: {{ message[3] }} </small></p>
+              <p>Commissioned you: ${{ message[2] }}</p>
+            </div>
+            {%else%}
             <div class="bg-secondary text-white">
               <p><b>{{ user[0] }}</b>              <small> Sent: {{ message[3] }} </small></p>
               <p> {{ message[2] }}</p>
             </div>
+            {%endif%}
           {% else %} <!-- https://getbootstrap.com/docs/5.3/utilities/position/ -->
             <!-- if the message is being sent by user in session, right align + blue-->
+            {%if message[4]%} 
+            <div class="bg-primary text-white">
+              <p><b>{{ me }}</b>              <small> Sent: {{ message[3] }} </small></p>
+              <p>You commissioned: ${{ message[2] }}</p>
+            </div>
+            {%else%}
             <div class="bg-primary text-white"> 
               <p><b>{{ me }}</b>              <small> Sent: {{ message[3] }} </small></p>
               <p> {{ message[2] }}</p>
             </div>
+            {%endif%}
           {%endif%}
         {%endfor%}
       {%endif%}

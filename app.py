@@ -371,8 +371,6 @@ def initconvo(username):
     return render_template('message.html', user=oppuser, history=prevchats, me=session['user'])
 
 # handle message sent
-
-
 @app.post("/msg/<username>")
 def chatuser(username):
     # take message sent by user and get time sent
@@ -392,6 +390,34 @@ def chatuser(username):
 
     # redirect to the same page
     return redirect(f'/msg/{touser}')
+
+#commissioning!
+@app.post("/msgcom/<username>")
+def commissionArtist(username):
+    # grab amount sent
+    amount = request.form.get('amount')
+    touser = username
+    fromuser = session['user'] 
+    now = datetime.now()
+    # pull time 
+    datetimestring = now.strftime("%Y/%m/%d %H:%M:%S")
+
+    # push to database and set isCommission to true
+    addcom = "INSERT INTO Messages VALUES (%s, %s, %s, %s, %s)"
+    addvals = (touser, fromuser, amount, datetimestring, '1')
+    mysqlcursor.execute(addcom, addvals)
+
+    mydb.commit()
+
+    #add commission money to artist's account
+    addcom = "UPDATE Users SET Money = Money + (%s) WHERE username = (%s)"
+    addvals = (amount, touser)
+    mysqlcursor.execute(addcom, addvals)
+    mydb.commit()
+
+    # redirect 
+    return redirect(f'/msg/{touser}')
+
 
 
 @app.route('/like/<id>', methods=['POST'])
