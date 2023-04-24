@@ -371,6 +371,8 @@ def initconvo(username):
     return render_template('message.html', user=oppuser, history=prevchats, me=session['user'])
 
 # handle message sent
+
+
 @app.post("/msg/<username>")
 def chatuser(username):
     # take message sent by user and get time sent
@@ -392,6 +394,8 @@ def chatuser(username):
     return redirect(f'/msg/{touser}')
 
 #commissioning!
+
+
 @app.post("/msgcom/<username>")
 def commissionArtist(username):
     # grab amount sent
