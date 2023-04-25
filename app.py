@@ -406,19 +406,35 @@ def commissionArtist(username):
     # pull time 
     datetimestring = now.strftime("%Y/%m/%d %H:%M:%S")
 
-    # push to database and set isCommission to true
-    addcom = "INSERT INTO Messages VALUES (%s, %s, %s, %s, %s)"
-    addvals = (touser, fromuser, amount, datetimestring, '1')
-    mysqlcursor.execute(addcom, addvals)
 
-    mydb.commit()
+    #get current user's balance 
+    mysqlcursor.execute(
+        f"SELECT Money FROM Users WHERE username='{fromuser}'")
+    balance = mysqlcursor.fetchone()
+    numbal = balance[0]
+    numbal = float(numbal)
+    amount = float(amount)
 
-    #add commission money to artist's account
-    addcom = "UPDATE Users SET Money = Money + (%s) WHERE username = (%s)"
-    addvals = (amount, touser)
-    mysqlcursor.execute(addcom, addvals)
-    mydb.commit()
+    #send only if user has sufficient funds in account
+    if (numbal>amount):
+        # push to message db and set isCommission to true
+        addcom = "INSERT INTO Messages VALUES (%s, %s, %s, %s, %s)"
+        addvals = (touser, fromuser, amount, datetimestring, '1')
+        mysqlcursor.execute(addcom, addvals)
+        mydb.commit()
 
+        #add commission money to artist's account
+        addcom = "UPDATE Users SET Money = Money + (%s) WHERE username = (%s)"
+        addvals = (amount, touser)
+        mysqlcursor.execute(addcom, addvals)
+        mydb.commit()
+
+        #subtract money from sender's account
+        addcom = "UPDATE Users SET Money = Money - (%s) WHERE username = (%s)"
+        addvals = (amount, fromuser)
+        mysqlcursor.execute(addcom, addvals)
+        mydb.commit()
+    
     # redirect 
     return redirect(f'/msg/{touser}')
 
