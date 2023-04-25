@@ -50,86 +50,84 @@
         <td>
           <!-- displays buttons on the same line-->
           
-          <div class="d-flex justify-content-end"> <!-- message with poster-->
-            <form 
-              action="{{ url_for('initconvo', username=post[i][4]) }}" 
-              method="get">
-              <input 
-                type="hidden" 
-                name="username" 
-                value={{post[i][4]}}>
-              <button 
-                type="submit" 
-                class="btn btn-dark"
-                >
-                Message
+          <div class="d-flex justify-content-between"> <!-- Visit their profile-->
+            <form action="{{ url_for('visitUser', username=post[i][4]) }}" method="get">
+              <input type="hidden" name="username" value={{post[i][4]}}>
+              <button type="submit" class="btn btn-dark">
+                Visit {{post[i][4]}}
               </button>
             </form>
-            
 
-            <!-- only show to users other than poster -->
-            {% if user.lower() != post[i][4].lower() %}
-              <form 
-                action="{{ url_for('follow_user') }}" 
-                method="post">
-                <input 
-                  type="hidden" 
-                  name="username" 
-                  value={{post[i][4]}}>
-                <button 
-                  type="submit" 
-                  class="btn btn-dark"
-                  >
-                  Follow
+            <div class="d-flex justify-content-end">
+              <!-- message with poster-->
+              <form action="{{ url_for('initconvo', username=post[i][4]) }}" method="get">
+                <input type="hidden" name="username" value={{post[i][4]}}>
+                <button type="submit" class="btn btn-dark">
+                  Message
                 </button>
               </form>
               
-              <form 
-                action="{{ url_for('unfollow_user') }}" 
-                method="post">
-                <input 
-                  type="hidden" 
-                  name="username" 
-                  value="{{post[i][4]}}" />
-                <button 
-                  type="submit" 
-                  class="btn btn-dark"
-                  >
-                  Unfollow
-                </button>
-              </form>
-            {% endif %}
 
-            <form>
-              <button
-                type="submit"
-                class="btn btn-warning"
-                formaction="/comments/{{post[i][0]}}"
-              >
-                Comments
-              </button>
-            </form>
+              <!-- only show to users other than poster -->
+              {% if user.lower() != post[i][4].lower() %}
+                <form action="{{ url_for('follow_user') }}" 
+                  method="post">
+                  <input 
+                    type="hidden" 
+                    name="username" 
+                    value={{post[i][4]}}>
+                  <button 
+                    type="submit" 
+                    class="btn btn-dark"
+                    >
+                    Follow
+                  </button>
+                </form>
+                
+                <form 
+                  action="{{ url_for('unfollow_user') }}" 
+                  method="post">
+                  <input 
+                    type="hidden" 
+                    name="username" 
+                    value="{{post[i][4]}}" />
+                  <button 
+                    type="submit" 
+                    class="btn btn-dark"
+                    >
+                    Unfollow
+                  </button>
+                </form>
+              {% endif %}
 
-            <!-- only display to owner of post -->
-            {% if user.lower() == post[i][4].lower() %}
               <form>
                 <button
                   type="submit"
                   class="btn btn-warning"
-                  formaction="/edit/{{post[i][0]}}"
+                  formaction="/comments/{{post[i][0]}}"
                 >
-                  Edit
+                  Comments
                 </button>
               </form>
 
-              <form
-                action="{{ url_for('deletePost', id=post[i][0]) }}"
-                method="POST"
-              >
-                <input type="hidden" name="_method" value="DELETE" />
-                <button type="submit" class="btn btn-danger">Delete</button>
-              </form>
-            {% endif %}
+              <!-- only display to owner of post -->
+              {% if user.lower() == post[i][4].lower() %}
+                <form>
+                  <button
+                    type="submit"
+                    class="btn btn-warning"
+                    formaction="/edit/{{post[i][0]}}"
+                  >
+                    Edit
+                  </button>
+                </form>
+
+                <form action="{{ url_for('deletePost', id=post[i][0]) }}" method="POST">
+                  <input type="hidden" name="_method" value="DELETE" />
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+              {% endif %}
+            </div>
           </div>
         </td>
       </div>

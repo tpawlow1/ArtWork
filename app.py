@@ -572,5 +572,17 @@ def AddFunds():
     return redirect('/profile')
 
 
+@app.get("/visit/<username>")
+def visitUser(username):
+    # get user's info
+    mysqlcursor.execute(f"SELECT * FROM Users WHERE username='{username}'")
+    data = mysqlcursor.fetchall()
+
+    # get same users posts for display
+    mysqlcursor.execute(f"SELECT * FROM Posts WHERE user='{username}'")
+    userposts = mysqlcursor.fetchall()
+
+    return render_template('otherprofile.html', user=data, posts=userposts)
+
 if __name__ == "__main__":
     app.run()
