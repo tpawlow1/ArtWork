@@ -4,8 +4,15 @@
 <div>
     <div style="margin-top: 25px; float:left; width:30%;">
         <img src="../static/images/{{user[0][4]}}" width="300px" height="auto" style="clip-path: circle()">
+
         <h2 style="margin-left: 30px;">{{user[0][0]}}</h2>
         <h4 style="margin-left: 30px">{{user[0][3]}}</h4>
+
+        <div class="follower-count" style="display: inline">
+          <img src="/static/images/follower.svg" alt="Follower Icon" style="background-color: transparent; width: 40px; height: 40px; margin-left: 20px;">
+          <span>{{follower_count[0][0]}}</span>
+        </div>
+
         <div> <!-- options for messaging and following user-->
             <td>
               <div class="d-flex justify-content-start">
@@ -23,7 +30,6 @@
                         Follow
                       </button>
                     </form>
-                    
                     <form action="{{ url_for('unfollow_user') }}" method="post" style="margin-left: 10px;">
                       <input type="hidden" name="username" value="{{user[0][0]}}" />
                       <button type="submit" class="btn btn-dark">
