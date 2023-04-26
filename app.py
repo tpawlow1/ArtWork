@@ -76,13 +76,11 @@ def logout():
 
 # get user signup page
 
-
 @app.get("/signup")
 def get_Signup():
     return render_template('signup.html')
 
 # post user info and create user
-
 
 @app.post("/signup")
 def Signup():
@@ -139,14 +137,32 @@ def get_following_posts(username):
 
     return posts
 
+def get_follower_count():
+    user = session['user']
+
+    mysqlcursor.execute(f"SELECT COUNT(*) FROM Follows WHERE following = '{user}'")
+    data = mysqlcursor.fetchall()
+
+    return data
+
+def get_followers():
+    user = session['user']
+
+    mysqlcursor.execute(f"SELECT * FROM Follows WHERE following = '{user}'")
+    data = mysqlcursor.fetchall()
+
+    return data
 
 @app.get("/profile")
 def profilePage():
     user = session['user']
     mysqlcursor.execute(f"SELECT * FROM Users WHERE username='{user}'")
     data = mysqlcursor.fetchall()
-    return render_template("profilePage.html", data=data)
 
+    follower_count = get_follower_count()
+    followers = get_followers()
+    
+    return render_template("profilePage.html", data=data, follower_count=follower_count, followers=followers)
 
 @app.post("/profile")
 def editProfile():
@@ -582,7 +598,10 @@ def visitUser(username):
     mysqlcursor.execute(f"SELECT * FROM Posts WHERE user='{username}'")
     userposts = mysqlcursor.fetchall()
 
-    return render_template('otherprofile.html', user=data, posts=userposts)
+    mysqlcursor.execute(f"SELECT COUNT(*) FROM Follows WHERE following = '{username}'")
+    follower_count = mysqlcursor.fetchall()
+    
+    return render_template('otherprofile.html', user=data, posts=userposts, follower_count=follower_count)
 
 if __name__ == "__main__":
     app.run()

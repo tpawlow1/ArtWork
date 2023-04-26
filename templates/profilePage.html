@@ -10,10 +10,32 @@
       <button onclick=openPicForm() style="background-color: inherit; border: none;" class="picBtn">
         <img src="../static/images/{{data[0][4]}}" width="300px" height="auto" style="clip-path: circle()">
       </button>
+
       <h2 style="margin-left: 30px;">{{data[0][0]}}</h2>
       <h4 style="margin-left: 30px">${{data[0][6]}}</h4>
       <h4 style="margin-left: 30px">{{data[0][3]}}</h4>
+
+      <button style="background-color: transparent; border-color: transparent" class="openbtn" onclick="openFollowerForm()">
+        <div class="follower-count" style="display: inline">
+          <img src="/static/images/follower.svg" alt="Follower Icon" style="background-color: transparent; width: 40px; height: 40px; margin-left: 10px;">
+          <span>{{follower_count[0][0]}}</span>
+        </div>
+      </button>
     </div>
+
+    <div id="followerListOverlay" class="overlay">
+      <div class="wrap">
+        <span class="closebtn" onclick="closeFollowerForm()" title="Close Overlay">&#215</span>
+        <h2>Followers</h2>
+        <form action="/profile" method="POST">
+          {% for follower in followers %}
+            <label>{{ follower[0] }}</label>
+            <br>
+          {% endfor %}
+        </form>
+      </div>
+    </div>
+
     <div id="editProfileOverlay" class="overlay">
       <div class="wrap">
         <span class="closebtn" onclick="closeForm()" title="Close Overlay">&#215</span>
