@@ -44,12 +44,12 @@
             <!-- if the message is coming to the user in session, left align + green-->
             <!-- if the message is commission, send custom message-->
             {%if message[4]%} 
-            <div class="bg-secondary text-white">
+            <div class="alert alert-success" role="alert">
               <p><b>{{ user[0] }}</b>              <small> Sent: {{ message[3] }} </small></p>
-              <p>Commissioned you: ${{ message[2] }}</p>
+              <p>Sent you a commission of: ${{ message[2] }}</p>
             </div>
             {%else%}
-            <div class="bg-secondary text-white">
+            <div class="alert alert-dark" role="alert">
               <p><b>{{ user[0] }}</b>              <small> Sent: {{ message[3] }} </small></p>
               <p> {{ message[2] }}</p>
             </div>
@@ -58,12 +58,12 @@
             <!-- if the message is being sent by user in session, right align + blue-->
             <!-- if the message is commission, send custom message-->
             {%if message[4]%} 
-            <div class="bg-primary text-white">
+            <div class="alert alert-success" role="alert">
               <p><b>{{ me }}</b>              <small> Sent: {{ message[3] }} </small></p>
-              <p>You commissioned: ${{ message[2] }}</p>
+              <p><i>You sent a commission of: ${{ message[2] }}</i></p>
             </div>
             {%else%}
-            <div class="bg-primary text-white"> 
+            <div class="alert alert-primary" role="alert"> 
               <p><b>{{ me }}</b>              <small> Sent: {{ message[3] }} </small></p>
               <p> {{ message[2] }}</p>
             </div>
