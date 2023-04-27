@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, session, url_for
+from flask import Flask, render_template, request, redirect, session, url_for, flash
 from datetime import datetime
 import mysql.connector
 import os
@@ -434,7 +434,9 @@ def commissionArtist(username):
         addvals = (amount, fromuser)
         mysqlcursor.execute(addcom, addvals)
         mydb.commit()
-    
+    else:
+        flash("You have insufficient funds")
+        
     # redirect 
     return redirect(f'/msg/{touser}')
 
