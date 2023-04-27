@@ -5,6 +5,15 @@
 
 {% block body %}
 
+{% for message in get_flashed_messages() %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <strong>{{message}}</strong>
+  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+{%endfor%}
 <div class="d-flex justify-content-center">
 <!-- left side holds artist information-->
   <div style="float:left; width:30%;">
@@ -14,6 +23,15 @@
     <img src="../static/images/{{ user[4] }}" width="300px" height="auto" style="clip-path: circle()">
     <h2 style="margin-left: 30px;">{{user[0]}}</h2>
     <h5 style="margin-left: 30px">{{user[3]}}</h5>
+
+    <!--if the user you're message is an artist then commission button will appear-->
+    {% if user[5] %}
+    <form action="/msgcom/{{user[0]}}" method="POST">
+      <label for="amount">Amount:</label>
+      <input type="number" name="amount"id="amount" placeholder="$1000.00" step=".01" required>
+      <button>Send Commission</button>
+    </form>
+    {%endif%}
   </div>
   <!-- right side is message list, use jinja python to pull from database-->
   <div style="float:left; width:70%;">
@@ -24,16 +42,32 @@
         {% for message in history %}
           {% if message[0] != user[0] %}
             <!-- if the message is coming to the user in session, left align + green-->
-            <div class="bg-secondary text-white">
+            <!-- if the message is commission, send custom message-->
+            {%if message[4]%} 
+            <div class="alert alert-success" role="alert">
+              <p><b>{{ user[0] }}</b>              <small> Sent: {{ message[3] }} </small></p>
+              <p>Sent you a commission of: ${{ message[2] }}</p>
+            </div>
+            {%else%}
+            <div class="alert alert-dark" role="alert">
               <p><b>{{ user[0] }}</b>              <small> Sent: {{ message[3] }} </small></p>
               <p> {{ message[2] }}</p>
             </div>
+            {%endif%}
           {% else %} <!-- https://getbootstrap.com/docs/5.3/utilities/position/ -->
             <!-- if the message is being sent by user in session, right align + blue-->
-            <div class="bg-primary text-white"> 
+            <!-- if the message is commission, send custom message-->
+            {%if message[4]%} 
+            <div class="alert alert-success" role="alert">
+              <p><b>{{ me }}</b>              <small> Sent: {{ message[3] }} </small></p>
+              <p><i>You sent a commission of: ${{ message[2] }}</i></p>
+            </div>
+            {%else%}
+            <div class="alert alert-primary" role="alert"> 
               <p><b>{{ me }}</b>              <small> Sent: {{ message[3] }} </small></p>
               <p> {{ message[2] }}</p>
             </div>
+            {%endif%}
           {%endif%}
         {%endfor%}
       {%endif%}
@@ -47,6 +81,7 @@
                     <input type="" class="form-control" name="content" placeholder="" required>
                     <button>Send</button>
                 </form>
+                
             </div>
         </td>
     </form>

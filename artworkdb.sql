@@ -39,7 +39,8 @@ CREATE TABLE IF NOT EXISTS`Messages`(
     `tousername` varchar(40), 
     `fromusername` varchar(40), 
     `content` varchar(300), 
-    `time` timestamp
+    `time` timestamp,
+    `isCommission` BOOLEAN DEFAULT false
 );
 
 CREATE TABLE IF NOT EXISTS `Auctions` (
