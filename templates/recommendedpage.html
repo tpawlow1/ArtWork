@@ -27,136 +27,77 @@
     </header>
     {% block body %}
     <h1>{{user}}'s Recommended Page </h1>
-    {%if post|length == 0%}
-    <h2>No Posts!</h2>
-    {%else%} {%for i in range(post|length)%}
-    <tr>
-      <div class="card" style="width: 30%">
-        <!-- card div for the posts-->
+    {% if post|length == 0 %}
+        <h2>No Posts!</h2>
+    {% else %}
+        <div class="row">
+            {% for i in range(post|length) %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="../static/images/{{ post[i][3] }}" class="card-img-top" width="100%"/>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ post[i][1] }}</h5>
+                            <p class="card-text">{{ post[i][2] }}</p>
+                            <p class="card-text"><small class="text-muted">Posted by {{ post[i][4] }}</small></p>
+                        </div>
+                        <div class="card-footer">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <form method="post">
+                                    <button type="submit" class="btn btn-warning" formaction="/dislike/{{ post[i][0] }}">
+                                        Dislike
+                                    </button>
+                                </form>
 
-        <img src="../static/images/{{post[i][3]}}" width="100%" />
+                                <form method="post">
+                                    <button type="submit" class="btn btn-warning" formaction="/like/{{ post[i][0] }}">
+                                        Like
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <form action="{{ url_for('initconvo', username=post[i][4]) }}" method="get">
+                                    <input type="hidden" name="username" value={{ post[i][4] }}>
+                                    <button type="submit" class="btn btn-dark">Message</button>
+                                </form>
 
-        <td>
-          <p align="left" style="font-size: 24px">
-            <b> {{post[i][1]}} </b>
-          </p>
-        </td>
-        {{post[i][2]}}
-        <br />
+                                {% if user.lower() != post[i][4].lower() %}
+                                    <form action="{{ url_for('follow_user') }}" method="post">
+                                        <input type="hidden" name="username" value={{ post[i][4] }}>
+                                        <button type="submit" class="btn btn-dark">Follow</button>
+                                    </form>
 
-        <!-- displays username of the poster -->
-        <p>Posted by {{post[i][4]}}</p>
+                                    <form action="{{ url_for('unfollow_user') }}" method="post">
+                                        <input type="hidden" name="username" value="{{ post[i][4] }}" />
+                                        <button type="submit" class="btn btn-dark">Unfollow</button>
+                                    </form>
+                                {% endif %}
 
-        <div class="d-flex justify-content-end">
-          <form method="post">
-            <button
-              type="submit"
-              class="btn-warning"
-              formaction="/dislike/{{post[i][0]}}"
-            >
-              Dislike
-            </button>
-          </form>
+                                <form>
+                                    <button type="submit" class="btn btn-warning" formaction="/comments/{{ post[i][0] }}">
+                                        Comments
+                                    </button>
+                                </form>
 
-          <form method="post">
-            <button
-              type="submit"
-              class="btn-warning"
-              formaction="/like/{{post[i][0]}}"
-            >
-              Like
-            </button>
-          </form>
+                                {% if user.lower() == post[i][4].lower() %}
+                                    <form>
+                                        <button type="submit" class="btn btn-warning" formaction="/edit/{{ post[i][0] }}">
+                                            Edit
+                                        </button>
+                                    </form>
+
+                                    <form action="{{ url_for('deletePost', id=post[i][0]) }}" method="POST">
+                                        <input type="hidden" name="_method" value="DELETE" />
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% if (loop.index % 3) == 0 %}
+                    </div><div class="row">
+                {% endif %}
+            {% endfor %}
         </div>
-
-        <td>
-          <!-- displays buttons on the same line-->
-          
-          <div class="d-flex justify-content-end"> <!-- message with poster-->
-            <form 
-              action="{{ url_for('initconvo', username=post[i][4]) }}" 
-              method="get">
-              <input 
-                type="hidden" 
-                name="username" 
-                value={{post[i][4]}}>
-              <button 
-                type="submit" 
-                class="btn btn-dark"
-                >
-                Message
-              </button>
-            </form>
-            
-
-            <!-- only show to users other than poster -->
-            {% if user.lower() != post[i][4].lower() %}
-              <form 
-                action="{{ url_for('follow_user') }}" 
-                method="post">
-                <input 
-                  type="hidden" 
-                  name="username" 
-                  value={{post[i][4]}}>
-                <button 
-                  type="submit" 
-                  class="btn btn-dark"
-                  >
-                  Follow
-                </button>
-              </form>
-              
-              <form 
-                action="{{ url_for('unfollow_user') }}" 
-                method="post">
-                <input 
-                  type="hidden" 
-                  name="username" 
-                  value="{{post[i][4]}}" />
-                <button 
-                  type="submit" 
-                  class="btn btn-dark"
-                  >
-                  Unfollow
-                </button>
-              </form>
-            {% endif %}
-
-            <form>
-              <button
-                type="submit"
-                class="btn btn-warning"
-                formaction="/comments/{{post[i][0]}}"
-              >
-                Comments
-              </button>
-            </form>
-
-            <!-- only display to owner of post -->
-            {% if user.lower() == post[i][4].lower() %}
-              <form>
-                <button
-                  type="submit"
-                  class="btn btn-warning"
-                  formaction="/edit/{{post[i][0]}}"
-                >
-                  Edit
-                </button>
-              </form>
-
-              <form
-                action="{{ url_for('deletePost', id=post[i][0]) }}"
-                method="POST"
-              >
-                <input type="hidden" name="_method" value="DELETE" />
-                <button type="submit" class="btn btn-danger">Delete</button>
-              </form>
-            {% endif %}
-          </div>
-        </td>
-      </div>
-    </tr>
-    {%endfor%} {%endif%}{% endblock %}
-    <footer></footer>
-  </body>
-</html>
+    {% endif %}
+{% endblock %}
