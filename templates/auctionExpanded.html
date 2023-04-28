@@ -1,0 +1,29 @@
+{% extends './_layouts/_layout_home.html' %} {% block title %}Add Funds!{%
+endblock %} {% block body %}
+<tr>
+  <div class="card" style="width: 30%">
+    <!-- card div for the auctions-->
+
+    <img src="../static/images/{{auction[i][3]}}" width="100%" />
+
+    <td>
+      <p align="left" style="font-size: 24px">
+        <b> {{auction[i][1]}} </b>
+      </p>
+    </td>
+    <p>{{auction[i][2]}}</p>
+    <p>
+      <a href="{{ url_for('auctionExpand', id=auction[i][0]) }}"
+        ><button>Buy-Now</button></a
+      >
+      ${{auction[i][7]}}
+    </p>
+
+    <!-- displays username of the poster -->
+    <div style="background-color: lightgoldenrodyellow">
+      <p>Created by {{auction[i][4]}} at {{auction[i][5]}}</p>
+      <p>Expires on {{auction[i][6]}}</p>
+    </div>
+  </div>
+</tr>
+{%endblock %}

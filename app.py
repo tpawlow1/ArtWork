@@ -14,7 +14,7 @@ ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 mydb = mysql.connector.connect(
     host="localhost",
-    user="sqluser",
+    user="root",
     password="password",
     database="ArtWork"
 )
@@ -76,11 +76,13 @@ def logout():
 
 # get user signup page
 
+
 @app.get("/signup")
 def get_Signup():
     return render_template('signup.html')
 
 # post user info and create user
+
 
 @app.post("/signup")
 def Signup():
@@ -137,13 +139,16 @@ def get_following_posts(username):
 
     return posts
 
+
 def get_follower_count():
     user = session['user']
 
-    mysqlcursor.execute(f"SELECT COUNT(*) FROM Follows WHERE following = '{user}'")
+    mysqlcursor.execute(
+        f"SELECT COUNT(*) FROM Follows WHERE following = '{user}'")
     data = mysqlcursor.fetchall()
 
     return data
+
 
 def get_followers():
     user = session['user']
@@ -153,6 +158,7 @@ def get_followers():
 
     return data
 
+
 @app.get("/profile")
 def profilePage():
     user = session['user']
@@ -161,8 +167,9 @@ def profilePage():
 
     follower_count = get_follower_count()
     followers = get_followers()
-    
+
     return render_template("profilePage.html", data=data, follower_count=follower_count, followers=followers)
+
 
 @app.post("/profile")
 def editProfile():
@@ -409,7 +416,7 @@ def chatuser(username):
     # redirect to the same page
     return redirect(f'/msg/{touser}')
 
-#commissioning!
+# commissioning!
 
 
 @app.post("/msgcom/<username>")
@@ -417,13 +424,12 @@ def commissionArtist(username):
     # grab amount sent
     amount = request.form.get('amount')
     touser = username
-    fromuser = session['user'] 
+    fromuser = session['user']
     now = datetime.now()
-    # pull time 
+    # pull time
     datetimestring = now.strftime("%Y/%m/%d %H:%M:%S")
 
-
-    #get current user's balance 
+    # get current user's balance
     mysqlcursor.execute(
         f"SELECT Money FROM Users WHERE username='{fromuser}'")
     balance = mysqlcursor.fetchone()
@@ -431,31 +437,30 @@ def commissionArtist(username):
     numbal = float(numbal)
     amount = float(amount)
 
-    #send only if user has sufficient funds in account
-    if (numbal>amount):
+    # send only if user has sufficient funds in account
+    if (numbal > amount):
         # push to message db and set isCommission to true
         addcom = "INSERT INTO Messages VALUES (%s, %s, %s, %s, %s)"
         addvals = (touser, fromuser, amount, datetimestring, '1')
         mysqlcursor.execute(addcom, addvals)
         mydb.commit()
 
-        #add commission money to artist's account
+        # add commission money to artist's account
         addcom = "UPDATE Users SET Money = Money + (%s) WHERE username = (%s)"
         addvals = (amount, touser)
         mysqlcursor.execute(addcom, addvals)
         mydb.commit()
 
-        #subtract money from sender's account
+        # subtract money from sender's account
         addcom = "UPDATE Users SET Money = Money - (%s) WHERE username = (%s)"
         addvals = (amount, fromuser)
         mysqlcursor.execute(addcom, addvals)
         mydb.commit()
     else:
         flash("You have insufficient funds")
-        
-    # redirect 
-    return redirect(f'/msg/{touser}')
 
+    # redirect
+    return redirect(f'/msg/{touser}')
 
 
 @app.route('/like/<id>', methods=['POST'])
@@ -610,8 +615,6 @@ def createAuctionPost():
     return redirect('/auctionhouse')
 
 
-
-
 # get add funds page
 @app.get("/add")
 def getAddFunds():
@@ -622,6 +625,8 @@ def getAddFunds():
     return render_template('addfunds.html', data=data)
 
 # post after user added money
+
+
 @app.post("/add")
 def AddFunds():
     user = session['user']
@@ -646,10 +651,19 @@ def visitUser(username):
     mysqlcursor.execute(f"SELECT * FROM Posts WHERE user='{username}'")
     userposts = mysqlcursor.fetchall()
 
-    mysqlcursor.execute(f"SELECT COUNT(*) FROM Follows WHERE following = '{username}'")
+    mysqlcursor.execute(
+        f"SELECT COUNT(*) FROM Follows WHERE following = '{username}'")
     follower_count = mysqlcursor.fetchall()
-    
+
     return render_template('otherprofile.html', user=data, posts=userposts, follower_count=follower_count)
+
+
+@app.get("/auctionExpand/<id>")
+def auctionExpand(id):
+    mysqlcursor.execute(f"SELECT * FROM Auctions WHERE auction_id={id}")
+    auction = mysqlcursor.fetchall()
+    return render_template('auctionExpanded.html', auction=auction)
+
 
 if __name__ == "__main__":
     app.run()

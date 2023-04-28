@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS `Auctions` (
     `user` varchar(40),
     `createdTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	`endTime` DATETIME NOT NULL,
-    `price` DOUBLE,
+    `price` DECIMAL(6,2),
 	`isExpired` BOOLEAN DEFAULT false
 );
 
