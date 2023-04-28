@@ -56,13 +56,20 @@
                             </div>
                             <div class="d-flex justify-content-between align-items-center">
                                 <form action="{{ url_for('initconvo', username=post[i][4]) }}" method="get">
-                                    <input type="hidden" name="username" value={{ post[i][4] }}>
+                                    <input type="hidden" name="username" value="{{ post[i][4] }}">
                                     <button type="submit" class="btn btn-dark">Message</button>
                                 </form>
 
+                                <form action="{{ url_for('visitUser', username=post[i][4]) }}" method="get">
+                                    <input type="hidden" name="username" value={{post[i][4]}}>
+                                    <button type="submit" class="btn btn-dark">
+                                      {{post[i][4]}}
+                                    </button>
+                                  </form>
+
                                 {% if user.lower() != post[i][4].lower() %}
                                     <form action="{{ url_for('follow_user') }}" method="post">
-                                        <input type="hidden" name="username" value={{ post[i][4] }}>
+                                        <input type="hidden" name="username" value="{{ post[i][4] }}">
                                         <button type="submit" class="btn btn-dark">Follow</button>
                                     </form>
 

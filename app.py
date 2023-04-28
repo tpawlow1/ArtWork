@@ -14,7 +14,7 @@ ALLOWED_EXTENSIONS = {'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 mydb = mysql.connector.connect(
     host="localhost",
-    user="root",
+    user="sqluser",
     password="password",
     database="ArtWork"
 )
