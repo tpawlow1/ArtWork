@@ -660,9 +660,31 @@ def visitUser(username):
 
 @app.get("/auctionExpand/<id>")
 def auctionExpand(id):
-    mysqlcursor.execute(f"SELECT * FROM Auctions WHERE auction_id={id}")
+    mysqlcursor.execute(f"SELECT * FROM Auctions WHERE auction_id='{id}'")
     auction = mysqlcursor.fetchall()
-    return render_template('auctionExpanded.html', auction=auction)
+    return render_template('auctionExpanded.html', auction=auction, username=session['user'])
+
+
+@app.route('/buyNow/<id>', methods=['GET'])
+def buyNow(id):
+    mysqlcursor.execute(
+        f"SELECT * FROM Users WHERE username='{session['user']}'")
+    user = mysqlcursor.fetchall()
+
+    mysqlcursor.execute(f"SELECT * FROM Auctions WHERE auction_id='{id}'")
+    auction = mysqlcursor.fetchall()
+
+    updatedMoney = user[0][6] - auction[0][7]
+
+    if(updatedMoney >= 0):
+        mysqlcursor.execute(
+            f"UPDATE Users SET Money={updatedMoney} WHERE username='{session['user']}'")
+        mydb.commit()
+
+        mysqlcursor.execute(f"UPDATE Auctions SET isExpired=1 WHERE auction_id='{id}'")
+        mydb.commit()
+
+    return redirect('/auctionhouse')
 
 
 if __name__ == "__main__":
