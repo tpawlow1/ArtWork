@@ -12,6 +12,14 @@
       crossorigin="anonymous"
     />
     <title>Login</title>
+    <style>
+      .login-form {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    </style>
   </head>
   <body>
     <!-- navbar for website-->
@@ -26,23 +34,21 @@
         </div>
       </div>
     </header>
-<div>
-  <h1>Login to ArtWork!</h1>
-  <div>
-    <form method="post">
-      <label>Username:</label>
-      <input type="text" name="username" />
-      <br />
-      <label>Password:</label>
-      <input type="password" name="password" />
-      <br />
-      <div style="color: red">{{message}}</div>
-      <input type="submit" value="Login" />
-    </form>
-  </div>
-</div>
-<footer></footer>
-</body>
+    <div class="login-form">
+      <h1>Login to ArtWork!</h1>
+      <div>
+        <form method="post">
+          <label>Username:</label>
+          <input type="text" name="username" />
+          <br />
+          <label>Password:</label>
+          <input type="password" name="password" />
+          <br />
+          <div style="color: red">{{message}}</div>
+          <input type="submit" value="Login" />
+        </form>
+      </div>
+    </div>
+    <footer></footer>
+  </body>
 </html>
-
-
