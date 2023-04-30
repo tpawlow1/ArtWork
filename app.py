@@ -676,12 +676,44 @@ def buyNow(id):
 
     updatedMoney = user[0][6] - auction[0][7]
 
-    if(updatedMoney >= 0):
+    if updatedMoney >= 0 and not auction[0][8]:
         mysqlcursor.execute(
             f"UPDATE Users SET Money={updatedMoney} WHERE username='{session['user']}'")
         mydb.commit()
 
-        mysqlcursor.execute(f"UPDATE Auctions SET isExpired=1 WHERE auction_id='{id}'")
+        mysqlcursor.execute(
+            f"UPDATE Auctions SET isExpired=1 WHERE auction_id='{id}'")
+        mydb.commit()
+
+    return redirect('/auctionhouse')
+
+
+@app.route('/bid', methods=['POST'])
+def bid():
+    bid = request.form.get('bid')
+    id = request.form.get('auction_id')
+
+    mysqlcursor.execute(
+        f"SELECT * FROM Users WHERE username='{session['user']}'")
+    user = mysqlcursor.fetchall()
+
+    updatedMoney = user[0][6] - int(bid)
+
+    if updatedMoney >= 0:
+        mysqlcursor.execute(
+            f"UPDATE Users SET Money={updatedMoney} WHERE username='{session['user']}'")
+        mydb.commit()
+
+        mysqlcursor.execute(
+            f"UPDATE Auctions SET lastBidder='{session['user']}' WHERE auction_id='{id}'")
+        mydb.commit()
+
+        mysqlcursor.execute(
+            f"UPDATE Auctions SET lastBid='{bid}' WHERE auction_id='{id}'")
+        mydb.commit()
+
+        mysqlcursor.execute(
+            f"INSERT INTO Bids (bid_auction_id, bidder, bid_amount) VALUES ('{id}', '{session['user']}', '{bid}')")
         mydb.commit()
 
     return redirect('/auctionhouse')
