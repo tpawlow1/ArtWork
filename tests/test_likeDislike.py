@@ -11,9 +11,9 @@ def test_like():
     # making a post and user
 
     mysqlcursor = mydb.cursor(buffered=True)
-    addcom = "INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s)"
+    addcom = "INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s, %s)"
     addvals = ('testusername', 'testemail',
-               'testpassword', 'testbio', 'bunny.jpg', 0)
+               'testpassword', 'testbio', 'bunny.jpg', 0, 0.00)
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
 
@@ -65,9 +65,9 @@ def test_dislike():
     # making a post and user
 
     mysqlcursor = mydb.cursor(buffered=True)
-    addcom = "INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s)"
+    addcom = "INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s, %s)"
     addvals = ('testusername', 'testemail',
-               'testpassword', 'testbio', 'bunny.jpg', 0)
+               'testpassword', 'testbio', 'bunny.jpg', 0, 0.00)
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
 

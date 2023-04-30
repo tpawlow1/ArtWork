@@ -7,9 +7,9 @@ def test_artistVerification():
 
     # connect to database and add a user w/out artist privilege
     mysqlcursor = mydb.cursor(buffered=True)
-    addcom = "INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s)"
+    addcom = "INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s, %s)"
     addvals = ('testusername', 'testemail',
-               'testpassword', 'testbio', 'bunny.jpg', 0)
+               'testpassword', 'testbio', 'bunny.jpg', 0, 0.00)
 
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
@@ -25,7 +25,7 @@ def test_artistVerification():
 
     assert "testusername", "testemail" in results
     assert "testpassword", "testbio" in results
-    assert 1 == results[-1]
+    assert 1 == results[-2]
 
     mysqlcursor.execute("DELETE FROM Users WHERE username = 'testusername'")
     mydb.commit()

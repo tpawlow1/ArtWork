@@ -8,10 +8,10 @@ def test_follow():
 
     # generic account info
     mysqlcursor = mydb.cursor(buffered=True)
-    add_user1 = "INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s)"
-    addvals_user1 = ('user1', 'user1@test.com', 'password', 'user1 bio', 'user1 profile pic path', '0')
-    add_user2 = "INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s)"
-    addvals_user2 = ('user2', 'user2@test.com', 'password', 'user2 bio', 'user2 profile pic path', '0')
+    add_user1 = "INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    addvals_user1 = ('user1', 'user1@test.com', 'password', 'user1 bio', 'user1 profile pic path', '0', '0.00')
+    add_user2 = "INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    addvals_user2 = ('user2', 'user2@test.com', 'password', 'user2 bio', 'user2 profile pic path', '0', '0.00')
 
     mysqlcursor.execute(add_user1, addvals_user1)
     mysqlcursor.execute(add_user2, addvals_user2)

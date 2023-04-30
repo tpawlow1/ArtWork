@@ -8,8 +8,8 @@ def test_comment():
     testusername="testing"
     testuser = str(uuid.uuid4())
     mysqlcursor = mydb.cursor(buffered=True)
-    add_user = "INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s)"
-    addvals_user = ('test3', 'test@test.com', 'password', 'bio', 'default_profilepic.jpg', '0')
+    add_user = "INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    addvals_user = ('test3', 'test@test.com', 'password', 'bio', 'default_profilepic.jpg', '0', 0.00)
     mysqlcursor.execute(add_user, addvals_user)
     mydb.commit()
 

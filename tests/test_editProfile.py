@@ -8,9 +8,9 @@ def test_editProfile():
 
     # connect to database and create user before editing
     mysqlcursor = mydb.cursor(buffered=True)
-    addcom = "INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s)"
+    addcom = "INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s, %s)"
     addvals = ('testusername', 'testemail',
-               'testpassword', 'testbio', 'bunny.jpg', 0)
+               'testpassword', 'testbio', 'bunny.jpg', 0, 0.00)
 
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
@@ -43,9 +43,9 @@ def test_editProfile():
 
     # test 2 - when no username is entered
     mysqlcursor = mydb.cursor(buffered=True)
-    addcom = "INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s)"
+    addcom = "INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s, %s)"
     addvals = ('testusername', 'testemail',
-               'testpassword', 'testbio', 'bunny.jpg', 0)
+               'testpassword', 'testbio', 'bunny.jpg', 0, 0.00)
 
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
