@@ -1,6 +1,14 @@
-from app import app
+from app import app, mydb
 
 def test_login():
+
+    mysqlcursor = mydb.cursor(buffered=True)
+    addcom = "INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    addvals = ('paulthottappilly', 'testemail',
+               'password', 'testbio', 'bunny.jpg', 0, 0.00)
+    mysqlcursor.execute(addcom, addvals)
+    mydb.commit()
+
 
     #Preconditions: The user has signed up and has been added to the database but isn't logged in.
 
@@ -21,6 +29,12 @@ def test_login():
 
     assert login_response.status_code == 200
     assert "Login to ArtWork!" in login_response.data.decode('utf-8')
+
+    mysqlcursor = mydb.cursor(buffered=True)
+    query = f"DELETE FROM Users WHERE `username`='paulthottappilly'"
+    mysqlcursor.execute(query)
+    mydb.commit()
+    mysqlcursor.close()
 
 def test_logout():
     # Preconditions: The user is already logged into the account and wants to log out

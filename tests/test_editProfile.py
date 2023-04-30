@@ -78,17 +78,17 @@ def test_editProfile():
     # test 3 - when you try to change your username to one that already exists
     # user 1
     mysqlcursor = mydb.cursor(buffered=True)
-    addcom = "INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s)"
+    addcom = "INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s, %s)"
     addvals = ('user1', 'user1mail',
-               'user1pass', 'user1bio', 'bunny.jpg', 0)
+               'user1pass', 'user1bio', 'bunny.jpg', 0, 0.00)
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
 
     # user 2
     mysqlcursor = mydb.cursor(buffered=True)
-    addcom = "INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s)"
+    addcom = "INSERT INTO Users VALUES (%s, %s, %s, %s, %s, %s, %s)"
     addvals = ('user2', 'user2mail',
-               'user2pass', 'user2bio', 'bunny.jpg', 0)
+               'user2pass', 'user2bio', 'bunny.jpg', 0, 0.00)
     mysqlcursor.execute(addcom, addvals)
     mydb.commit()
 
