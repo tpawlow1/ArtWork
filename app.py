@@ -38,6 +38,23 @@ def getauctions():
     return data
 
 
+def returnMoney(auction_id):
+    mysqlcursor.execute(
+        f"SELECT * FROM Bids WHERE bid_auction_id='{auction_id}'")
+    bids = mysqlcursor.fetchall()
+
+    mysqlcursor.execute(
+        f"SELECT lastBidder FROM Auctions WHERE auction_id='{auction_id}'")
+    winner = mysqlcursor.fetchall()
+
+    for bid in bids:
+        print('bid[1]:')
+        print(bid[1])
+        if bid[1] != winner[0][0]:
+            mysqlcursor.execute(
+                f"UPDATE Users SET Money=Money + {bid[2]} WHERE username='{bid[1]}'")
+
+
 # get index
 @app.get("/")
 def index():
@@ -570,9 +587,20 @@ def getAuctionHouse():
     mysqlcursor.execute(f"SELECT * FROM Users WHERE username='{user}'")
     data = mysqlcursor.fetchall()
 
+    # gets auctions that are going to be expired to return money for bidding
+    mysqlcursor.execute(
+        f"SELECT * FROM Auctions WHERE NOW() > endTime AND isExpired = false")
+    expiredAuctions = mysqlcursor.fetchall()
+
+    if len(expiredAuctions) > 0:
+        for auction in expiredAuctions:
+            returnMoney(auction[0])
+
     # updates status of auctions whenever page is refreshed
     mysqlcursor.execute(
-        "UPDATE Auctions SET isExpired = true WHERE NOW() > endTime;")
+        "UPDATE Auctions SET isExpired = true WHERE NOW() > endTime")
+    mydb.commit()
+
     auction = getauctions()
     return render_template("auctionHouse.html", data=data, auction=auction)
 
