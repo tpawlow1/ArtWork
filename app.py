@@ -40,17 +40,28 @@ def getauctions():
 
 def returnMoney(auction_id):
     mysqlcursor.execute(
-        f"SELECT * FROM Bids WHERE bid_auction_id='{auction_id}'")
+        f"SELECT * FROM Bids WHERE bid_auction_id='{auction_id}' ORDER BY bid_amount DESC")
     bids = mysqlcursor.fetchall()
+    highestBid = bids[0][2]
 
     mysqlcursor.execute(
         f"SELECT lastBidder FROM Auctions WHERE auction_id='{auction_id}'")
-    winner = mysqlcursor.fetchall()
+    winner = mysqlcursor.fetchall()[0][0]
+
+    mysqlcursor.execute(
+        f"SELECT lastBid FROM Auctions WHERE auction_id='{auction_id}'")
+    lastBid = mysqlcursor.fetchall()[0][0]
+
+    mysqlcursor.execute(
+        f"SELECT user FROM Auctions WHERE auction_id='{auction_id}'")
+    auctionCreator = mysqlcursor.fetchall()[0][0]
+
+    mysqlcursor.execute(
+        f"UPDATE Users SET Money = Money + {lastBid} WHERE username={auctionCreator}")
+    mydb.commit()
 
     for bid in bids:
-        print('bid[1]:')
-        print(bid[1])
-        if bid[1] != winner[0][0]:
+        if bid[1] != winner or bid[2] != highestBid:
             mysqlcursor.execute(
                 f"UPDATE Users SET Money=Money + {bid[2]} WHERE username='{bid[1]}'")
 
@@ -702,7 +713,9 @@ def buyNow(id):
     mysqlcursor.execute(f"SELECT * FROM Auctions WHERE auction_id='{id}'")
     auction = mysqlcursor.fetchall()
 
-    updatedMoney = user[0][6] - auction[0][7]
+    auctionPrice = auction[0][7]
+
+    updatedMoney = user[0][6] - auctionPrice
 
     if updatedMoney >= 0 and not auction[0][8]:
         mysqlcursor.execute(
@@ -711,6 +724,14 @@ def buyNow(id):
 
         mysqlcursor.execute(
             f"UPDATE Auctions SET isExpired=1 WHERE auction_id='{id}'")
+        mydb.commit()
+
+        mysqlcursor.execute(
+            f"SELECT user FROM Auctions WHERE auction_id='{id}'")
+        auctionCreator = mysqlcursor.fetchall()[0][0]
+
+        mysqlcursor.execute(
+            f"UPDATE Users SET Money=Money + {auctionPrice} WHERE username='{auctionCreator}'")
         mydb.commit()
 
     return redirect('/auctionhouse')
