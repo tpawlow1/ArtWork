@@ -1,10 +1,10 @@
 from app import app, mydb
 import uuid
 from freezegun import freeze_time
+import requests
 
 
 def test_bid():
-    bid_id = str(uuid.uuid4())
     auction_id = str(uuid.uuid4())
     client = app.test_client()
 
@@ -46,11 +46,51 @@ def test_bid():
 
     freeze_time("2023-01-01 11:00:00")
 
+    with client.session_transaction() as session:
+        session['user'] = 'testuser1'
+
+    response = client.post('/bid', data={
+        "bid": 100.00,
+        "auction_id": f"{auction_id}"
+    })
+
+    assert response.status_code == 302
+
+    with client.session_transaction() as session:
+        session['user'] = 'testuser2'
+
+    response = client.post('/bid', data={
+        "bid": 200.00,
+        "auction_id": f"{auction_id}"
+    })
+
+    assert response.status_code == 302
+
+    with client.session_transaction() as session:
+        session['user'] = 'testuser3'
+
+    response = client.post('/bid', data={
+        "bid": 300.00,
+        "auction_id": f"{auction_id}"
+    })
+
+    assert response.status_code == 302
+
+    # mysqlcursor.execute("SELECT * FROM Bids WHERE bidder='testuser1'")
+    # results =
+
+    mysqlcursor.execute("SELECT * FROM Users WHERE username='testuser1'")
+    results = mysqlcursor.fetchone()
+
+    assert 'testuser1', 900.00 in results
+
     mysqlcursor.execute(
-        f"DELETE FROM Users WHERE username='testartist'")
+        f"TRUNCATE TABLE Bids")
     mydb.commit()
     mysqlcursor.execute(
-        f"DELETE FROM Auctions WHERE auction_id = '{auction_id}'")
+        f"TRUNCATE TABLE Auctions")
+    mydb.commit()
+    mysqlcursor.execute(f"DELETE FROM Users WHERE username='testartist'")
     mydb.commit()
     mysqlcursor.execute(f"DELETE FROM Users WHERE username='testuser1'")
     mydb.commit()

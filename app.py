@@ -3,6 +3,7 @@ from datetime import datetime
 import mysql.connector
 import os
 import uuid
+import decimal
 
 
 app = Flask(__name__)
@@ -746,7 +747,7 @@ def bid():
         f"SELECT * FROM Users WHERE username='{session['user']}'")
     user = mysqlcursor.fetchall()
 
-    updatedMoney = user[0][6] - int(bid)
+    updatedMoney = user[0][6] - decimal.Decimal(bid)
 
     if updatedMoney >= 0:
         mysqlcursor.execute(
