@@ -40,6 +40,7 @@ def getauctions():
 
 
 def returnMoney(auction_id):
+
     mysqlcursor.execute(
         f"SELECT * FROM Bids WHERE bid_auction_id='{auction_id}' ORDER BY bid_amount DESC")
     bids = mysqlcursor.fetchall()
@@ -58,7 +59,7 @@ def returnMoney(auction_id):
     auctionCreator = mysqlcursor.fetchall()[0][0]
 
     mysqlcursor.execute(
-        f"UPDATE Users SET Money = Money + {lastBid} WHERE username={auctionCreator}")
+        f"UPDATE Users SET Money = Money + {lastBid} WHERE username='{auctionCreator}'")
     mydb.commit()
 
     for bid in bids:
