@@ -1,7 +1,6 @@
 from app import app, mydb
 import uuid
 from freezegun import freeze_time
-import requests
 
 
 def test_bid():
