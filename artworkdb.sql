@@ -51,8 +51,11 @@ CREATE TABLE IF NOT EXISTS `Auctions` (
     `user` varchar(40),
     `createdTime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	`endTime` DATETIME NOT NULL,
-    `price` DOUBLE,
-	`isExpired` BOOLEAN DEFAULT false
+    `price` DECIMAL(6,2),
+	`isExpired` BOOLEAN DEFAULT false,
+    `lastBidder` varchar(40),
+    `lastBid` DECIMAL(6,2) DEFAULT 0.00,
+    FOREIGN KEY (`lastBidder`) REFERENCES Users(`username`)
 );
 
 CREATE TABLE IF NOT EXISTS `Post_Interactions` (	
@@ -63,3 +66,10 @@ CREATE TABLE IF NOT EXISTS `Post_Interactions` (
     FOREIGN KEY (`pi_userID`) REFERENCES Users(`username`),
     FOREIGN KEY (`pi_postID`) REFERENCES Posts(`id`)
 );
+
+CREATE TABLE IF NOT EXISTS `Bids` (
+    `bid_auction_id` varchar(100),
+    `bidder` varchar(40),
+    `bid_amount` DECIMAL(6,2),
+    FOREIGN KEY (`bidder`) REFERENCES Users(`username`)
+)
