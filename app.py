@@ -605,9 +605,12 @@ def getAuctionHouse():
         f"SELECT * FROM Auctions WHERE NOW() > endTime AND isExpired = false")
     expiredAuctions = mysqlcursor.fetchall()
 
+    print(expiredAuctions)
+
     if len(expiredAuctions) > 0:
         for auction in expiredAuctions:
-            returnMoney(auction[0])
+            if auction[9] != None:
+                returnMoney(auction[0])
 
     # updates status of auctions whenever page is refreshed
     mysqlcursor.execute(
